@@ -6,632 +6,7 @@
   <title>STYLEMATE AI — персональный AI-стилист</title>
   <meta name="description" content="Загрузи фото — получи подборку образов, которые реально подходят тебе." />
 
-  <style>
-    :root{
-      --bg:#0b0f19;
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --line:rgba(148,163,184,.18);
-      --accent:#8b5cf6;
-      --accent2:#22c55e;
-      --warn:#f59e0b;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
-      --radius: 18px;
-      --radius2: 26px;
-      --max: 1120px;
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:var(--font);
-      background:
-        radial-gradient(1000px 600px at 20% 10%, rgba(139,92,246,.35), transparent 60%),
-        radial-gradient(800px 500px at 90% 30%, rgba(34,197,94,.18), transparent 60%),
-        radial-gradient(900px 600px at 40% 120%, rgba(59,130,246,.18), transparent 60%),
-        var(--bg);
-      color:var(--text);
-    }
-
-    a{color:inherit; text-decoration:none}
-    .container{max-width:var(--max); margin:0 auto; padding:0 20px}
-
-    header{
-      position:sticky; top:0; z-index:20;
-      backdrop-filter: blur(12px);
-      background: rgba(11,15,25,.65);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 0;
-      gap:16px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px;
-    }
-    .logo{
-      width:34px; height:34px; border-radius:12px;
-      background: linear-gradient(135deg, rgba(139,92,246,.95), rgba(34,197,94,.85));
-      box-shadow: 0 14px 40px rgba(139,92,246,.28);
-    }
-    .navlinks{display:flex; gap:18px; align-items:center; color: var(--muted); font-weight:600}
-    .navlinks a{padding:8px 10px; border-radius:12px}
-    .navlinks a:hover{background: rgba(148,163,184,.10); color: var(--text)}
-
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center;
-      gap:10px;
-      padding:12px 14px;
-      border-radius: 14px;
-      border:1px solid rgba(139,92,246,.35);
-      background: rgba(139,92,246,.12);
-      color: var(--text);
-      font-weight:800;
-      cursor:pointer;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .btn:hover{background: rgba(139,92,246,.18); border-color: rgba(139,92,246,.55)}
-    .btn:active{transform: translateY(1px)}
-    .btn.primary{
-      border:0;
-      background: linear-gradient(135deg, rgba(139,92,246,.95), rgba(59,130,246,.85));
-      box-shadow: 0 18px 50px rgba(139,92,246,.24);
-    }
-    .btn.primary:hover{filter: brightness(1.05)}
-    .btn.ghost{
-      border:1px solid var(--line);
-      background: rgba(148,163,184,.06);
-      color: var(--text);
-    }
-    .btn.ghost:hover{background: rgba(148,163,184,.10)}
-    .btn:disabled{opacity:.55; cursor:not-allowed}
-
-    /* HERO */
-    .hero{padding: 54px 0 22px;}
-    .grid-hero{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 28px;
-      align-items: stretch;
-    }
-    .badge{
-      display:inline-flex; gap:10px; align-items:center;
-      padding:8px 12px; border-radius:999px;
-      border:1px solid rgba(139,92,246,.35);
-      background: rgba(139,92,246,.10);
-      color: #ddd6fe;
-      font-weight:800;
-      width: fit-content;
-    }
-    .badge .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: var(--accent2);
-      box-shadow: 0 0 0 6px rgba(34,197,94,.12);
-    }
-
-    h1{
-      margin: 14px 0 12px;
-      font-size: clamp(34px, 4vw, 52px);
-      line-height: 1.04;
-      letter-spacing: -0.8px;
-    }
-    .lead{
-      margin:0;
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1.6;
-      max-width: 56ch;
-      font-weight:600;
-    }
-    .cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;}
-    .mini{
-      margin-top:14px;
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      color: rgba(226,232,240,.85);
-      font-weight:700;
-      font-size: 13px;
-    }
-    .mini span{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      background: rgba(148,163,184,.06);
-      border:1px solid var(--line);
-      border-radius: 999px;
-    }
-    .mini i{
-      width:8px; height:8px; border-radius:50%;
-      background: rgba(139,92,246,.9);
-      display:inline-block;
-      box-shadow: 0 0 0 6px rgba(139,92,246,.12);
-    }
-
-    /* SECTIONS */
-    section{padding: 34px 0}
-    .section-head{display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom: 14px;}
-    h2{margin:0; font-size: clamp(22px, 2.3vw, 32px); letter-spacing: -0.4px;}
-    .sub{margin: 6px 0 0; color: var(--muted); max-width: 70ch; line-height: 1.6; font-weight: 600;}
-
-    .features{display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px;}
-    .feature{
-      background: rgba(16,24,39,.65);
-      border: 1px solid rgba(148,163,184,.16);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.22);
-    }
-    .feature .icon{
-      width:42px; height:42px; border-radius: 14px;
-      background: rgba(139,92,246,.14);
-      border: 1px solid rgba(139,92,246,.28);
-      display:grid; place-items:center;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-    .feature h3{margin:0 0 6px; font-size: 16px}
-    .feature p{margin:0; color: var(--muted); line-height:1.6; font-weight:600}
-
-    .how{display:grid; grid-template-columns: 1fr 1fr; gap: 12px;}
-    .step{
-      background: rgba(16,24,39,.65);
-      border: 1px solid rgba(148,163,184,.16);
-      border-radius: var(--radius);
-      padding: 14px;
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-    }
-    .num{
-      width:36px; height:36px; border-radius: 14px;
-      background: rgba(34,197,94,.14);
-      border: 1px solid rgba(34,197,94,.26);
-      display:grid; place-items:center;
-      font-weight: 900;
-      flex: 0 0 auto;
-    }
-    .step b{display:block; margin-top:2px}
-    .step span{display:block; margin-top:6px; color: var(--muted); line-height: 1.55; font-weight:600}
-
-    .cta-block{
-      background: linear-gradient(135deg, rgba(139,92,246,.18), rgba(34,197,94,.12));
-      border:1px solid rgba(148,163,184,.18);
-      border-radius: var(--radius2);
-      padding: 18px;
-      box-shadow: var(--shadow);
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 16px;
-      align-items:center;
-    }
-    form{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
-    input{
-      flex: 1 1 220px;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(148,163,184,.22);
-      background: rgba(2,6,23,.55);
-      color: var(--text);
-      outline:none;
-      font-weight: 700;
-    }
-    input:focus{border-color: rgba(139,92,246,.65); box-shadow: 0 0 0 6px rgba(139,92,246,.12)}
-    .note{margin:8px 0 0; color: rgba(148,163,184,.95); font-weight: 600; font-size: 13px}
-
-    .faq{display:grid; grid-template-columns: 1fr 1fr; gap: 12px}
-    details{
-      background: rgba(16,24,39,.65);
-      border:1px solid rgba(148,163,184,.16);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-    }
-    summary{cursor:pointer; font-weight: 900}
-    details p{margin:10px 0 0; color: var(--muted); line-height:1.6; font-weight:600}
-
-    footer{
-      padding: 22px 0 34px;
-      border-top: 1px solid var(--line);
-      color: rgba(148,163,184,.95);
-      font-weight: 650;
-    }
-    .footer-grid{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
-
-    /* ---------- "REAL SCREENSHOTS" PHONE DEMO ---------- */
-    .phone{
-      border-radius: 34px;
-      border: 1px solid rgba(148,163,184,.22);
-      background: #0a1020;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-      min-height: 520px;
-    }
-    .phone::before{
-      content:"";
-      position:absolute; inset:-1px;
-      background:
-        radial-gradient(520px 300px at 30% 10%, rgba(139,92,246,.20), transparent 60%),
-        radial-gradient(460px 320px at 80% 80%, rgba(34,197,94,.12), transparent 65%);
-      pointer-events:none;
-    }
-    /* bezel */
-    .bezel{
-      position:relative;
-      margin: 12px;
-      border-radius: 28px;
-      background: rgba(0,0,0,.55);
-      border: 1px solid rgba(255,255,255,.08);
-      padding: 10px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
-    }
-    /* screen */
-    .screenWrap{
-      position:relative;
-      border-radius: 22px;
-      overflow:hidden;
-      background: linear-gradient(180deg, #0b1224, #070b15);
-      border: 1px solid rgba(148,163,184,.14);
-      min-height: 480px;
-    }
-    /* notch */
-    .notch{
-      position:absolute;
-      top: 10px; left: 50%;
-      transform: translateX(-50%);
-      width: 170px; height: 30px;
-      border-radius: 0 0 18px 18px;
-      background: rgba(0,0,0,.70);
-      border: 1px solid rgba(255,255,255,.08);
-      z-index: 5;
-    }
-    .notch::before{
-      content:"";
-      position:absolute;
-      top: 8px; left: 50%;
-      transform: translateX(-50%);
-      width: 54px; height: 6px;
-      border-radius: 999px;
-      background: rgba(148,163,184,.20);
-    }
-    /* status bar */
-    .statusbar{
-      position:absolute;
-      top: 0; left:0; right:0;
-      padding: 10px 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      font-weight:800;
-      font-size: 12px;
-      color: rgba(226,232,240,.92);
-      z-index: 4;
-      pointer-events:none;
-    }
-    .sb-right{
-      display:flex; gap:8px; align-items:center;
-      color: rgba(226,232,240,.86);
-    }
-    .sb-dot{
-      width:6px; height:6px; border-radius:50%;
-      background: rgba(34,197,94,.9);
-      box-shadow: 0 0 0 5px rgba(34,197,94,.10);
-    }
-
-    /* app topbar inside screen */
-    .apptop{
-      position:relative;
-      padding: 44px 14px 12px; /* push under status+notch */
-      border-bottom: 1px solid rgba(148,163,184,.12);
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .apptitle{
-      font-weight: 950;
-      letter-spacing: -.2px;
-      font-size: 14px;
-      color: rgba(226,232,240,.95);
-    }
-    .appsub{
-      margin-top:6px;
-      color: rgba(148,163,184,.92);
-      font-weight:800;
-      font-size:12px;
-    }
-    .chip{
-      display:inline-flex; gap:8px; align-items:center;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(148,163,184,.08);
-      border: 1px solid rgba(148,163,184,.14);
-      font-weight:900;
-      font-size:12px;
-      color: rgba(226,232,240,.92);
-      white-space:nowrap;
-    }
-
-    /* screen content */
-    .appcontent{
-      padding: 12px 14px 16px;
-      display:grid;
-      gap: 10px;
-    }
-    .card{
-      background: rgba(2,6,23,.60);
-      border: 1px solid rgba(148,163,184,.16);
-      border-radius: 18px;
-      padding: 12px;
-    }
-    .row{display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .muted{color: var(--muted)}
-    .tag{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:6px 10px;
-      border-radius: 999px;
-      background: rgba(34,197,94,.10);
-      border: 1px solid rgba(34,197,94,.22);
-      color: rgba(187,247,208,.95);
-      font-weight:900;
-      font-size:12px;
-      width: fit-content;
-    }
-    /* чтобы 2 колонки реально влезали */
-    /* чтобы 2 колонки реально влезали */
-    .tiles{
-      display:grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 10px;
-    }
-
-    /* критично: разрешаем элементам сжиматься */
-    .tile{
-      min-width: 0;
-    }
-    /* upload tiles: title in 1 line + status under it */
-    .tile-upload{
-      align-items:center;
-    }
-
-    .tile-upload .tile-main{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-
-    .tile-upload .tile-title{
-      font-size:13px;
-      font-weight:900;
-      line-height:1.15;
-      white-space:nowrap;        /* строго 1 строка */
-      overflow:hidden;
-      text-overflow:ellipsis;    /* если вдруг будет длиннее */
-    }
-
-    .tile-upload .tile-status{
-      width:fit-content;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      border:1px solid rgba(148,163,184,.18);
-      background: rgba(148,163,184,.08);
-      color: rgba(226,232,240,.92);
-      white-space:nowrap;
-    }
-
-    .tile-upload .tile-status.ok{
-      background: rgba(34,197,94,.12);
-      border-color: rgba(34,197,94,.24);
-      color: rgba(187,247,208,.95);
-    }
-
-    /* текстовый блок в tile тоже должен уметь сжиматься */
-    .tile > div{
-      min-width: 0;
-    }
-
-    /* чтобы длинные слова не распирали плитку */
-    .tile b{
-      font-size:13px;
-      line-height:1.15;
-      white-space:normal;      /* разрешаем перенос */
-      overflow:visible;
-      text-overflow:clip;
-    }
-
-    .tile small{
-      display:block;
-      margin-top:3px;
-      color: var(--muted);
-      font-weight:800;
-      font-size:12px;
-      line-height:1.2;
-      white-space:normal;      /* разрешаем перенос */
-      overflow:visible;
-      text-overflow:clip;
-
-      display:-webkit-box;     /* аккуратно ограничим в 2 строки */
-      -webkit-line-clamp:2;
-      -webkit-box-orient:vertical;
-      overflow:hidden;
-    }
-    /* кнопка/плашка справа не должна ломать сетку */
-    .price{
-      font-size:11px;
-      padding:5px 9px;
-    }
-    .tile{
-      background: rgba(148,163,184,.06);
-      border:1px solid rgba(148,163,184,.16);
-      border-radius: 16px;
-      padding: 10px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .ph{
-      width:44px; height:44px; border-radius: 14px;
-      background: linear-gradient(135deg, rgba(139,92,246,.85), rgba(59,130,246,.65));
-      border:1px solid rgba(255,255,255,.10);
-      flex: 0 0 auto;
-    }
-    .tile b{font-size:13px}
-    .tile small{display:block; margin-top:2px; color: var(--muted); font-weight:750}
-    .price{
-      margin-left:auto;
-      font-weight:950;
-      color: rgba(226,232,240,.95);
-      background: rgba(245,158,11,.10);
-      border: 1px solid rgba(245,158,11,.24);
-      padding:6px 10px;
-      border-radius: 999px;
-      font-size:12px;
-      white-space:nowrap;
-    }
-
-    /* demo navigation like in-app bottom bar */
-    .bottombar{
-      position:absolute;
-      left:0; right:0; bottom:0;
-      padding: 10px 12px;
-      background: rgba(2,6,23,.74);
-      border-top: 1px solid rgba(148,163,184,.12);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      z-index: 6;
-    }
-    .dots{display:flex; gap:6px; align-items:center;}
-    .dot2{
-      width:7px; height:7px; border-radius:999px;
-      background: rgba(148,163,184,.35);
-      border: 1px solid rgba(148,163,184,.18);
-    }
-    .dot2.active{
-      background: rgba(139,92,246,.95);
-      box-shadow: 0 0 0 6px rgba(139,92,246,.12);
-      border-color: rgba(139,92,246,.35);
-    }
-    .navbtn{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(148,163,184,.16);
-      background: rgba(148,163,184,.06);
-      color: rgba(226,232,240,.95);
-      font-weight:900;
-      cursor:pointer;
-      transition: transform .08s ease, background .2s ease;
-    }
-    .navbtn:hover{background: rgba(148,163,184,.10)}
-    .navbtn:active{transform: translateY(1px)}
-    .navbtn.primary{
-      border:0;
-      background: linear-gradient(135deg, rgba(139,92,246,.95), rgba(59,130,246,.85));
-    }
-    .navbtn:disabled{opacity:.55; cursor:not-allowed}
-
-    /* screen switching */
-    .demo-screen{display:none; animation: pop .18s ease;}
-    .demo-screen.active{display:block;}
-    @keyframes pop{from{opacity:0; transform: translateY(6px)} to{opacity:1; transform: translateY(0)}}
-
-    /* previews */
-    .preview-grid{display:grid; grid-template-columns: 1fr 1fr; gap: 10px;}
-    .preview-box{
-      border-radius: 14px;
-      border:1px solid rgba(148,163,184,.16);
-      background: rgba(2,6,23,.35);
-      overflow:hidden;
-      min-height: 180px;
-      display:grid;
-      place-items:center;
-      padding: 10px;
-    }
-    .preview-box img{
-      width:100%;
-      height:180px;
-      object-fit:cover;
-      border-radius: 12px;
-      display:none;
-      border:1px solid rgba(148,163,184,.14);
-    }
-    .hint{
-      margin-top:8px;
-      color: rgba(148,163,184,.95);
-      font-weight: 800;
-      font-size: 12px;
-    }
-
-    /* analyzing overlay */
-    .overlay{
-      position:absolute;
-      inset: 0;
-      background: rgba(2,6,23,.55);
-      backdrop-filter: blur(8px);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index: 10;
-    }
-    .overlay.active{display:flex;}
-    .modal{
-      width: min(320px, calc(100% - 28px));
-      border-radius: 20px;
-      border: 1px solid rgba(148,163,184,.18);
-      background: rgba(2,6,23,.85);
-      padding: 14px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.45);
-    }
-    .progress{
-      height:10px;
-      border-radius: 999px;
-      background: rgba(148,163,184,.12);
-      border: 1px solid rgba(148,163,184,.14);
-      overflow:hidden;
-      margin-top:10px;
-    }
-    .bar{
-      height:100%;
-      width: 0%;
-      background: linear-gradient(135deg, rgba(139,92,246,.95), rgba(34,197,94,.70));
-      border-radius: 999px;
-      transition: width .25s ease;
-    }
-    .modal small{display:block; margin-top:8px; color: rgba(148,163,184,.95); font-weight:750; line-height:1.4;}
-    .spark{
-      display:inline-flex; align-items:center; gap:8px;
-      font-weight:950;
-      color: rgba(226,232,240,.96);
-    }
-    .spinner{
-      width:16px; height:16px;
-      border-radius:50%;
-      border:2px solid rgba(148,163,184,.25);
-      border-top-color: rgba(139,92,246,.95);
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin{to{transform: rotate(360deg)}}
-
-    @media (max-width: 920px){
-      .grid-hero{grid-template-columns: 1fr}
-      .cta-block{grid-template-columns: 1fr}
-      form{justify-content:flex-start}
-      .features{grid-template-columns: 1fr}
-      .how{grid-template-columns: 1fr}
-      .faq{grid-template-columns: 1fr}
-      .navlinks{display:none}
-      .preview-grid{grid-template-columns: 1fr}
-      .preview-box img{height:220px;}
-      .preview-box{min-height: 220px;}
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
@@ -664,7 +39,6 @@
         <div>
           <div class="badge"><span class="dot"></span> Персональный AI-стилист в телефоне</div>
 
-          <!-- ✅ Заголовок обновлён -->
           <h1>Загрузи фото — получи подборку образов, которые реально подходят тебе</h1>
 
           <p class="lead">
@@ -709,81 +83,89 @@
               <div class="appcontent" id="demoScreens">
                 <!-- Screen 1 -->
                 <div class="demo-screen active" data-title="Шаг 1 • Загрузка фото" data-chip="Офис • demo">
-		  <div class="card">
-		    <div class="row">
-		      <b>Добавьте фото</b>
-		      <span class="tag">Локально</span>
-		    </div>
+                  <div class="card">
+                    <div class="row">
+                      <b>Добавьте фото</b>
+                      <span class="tag">Локально</span>
+                    </div>
 
-		    <div class="tiles" style="margin-top:12px;">
-          <div class="tile tile-upload">
-            <div class="ph"></div>
-        
-            <div class="tile-main">
-              <div class="tile-title">Фото лица</div>
-              <div class="tile-status ok">Загружено</div>
-            </div>
-          </div>
-        
-          <div class="tile tile-upload">
-            <div class="ph" style="background:linear-gradient(135deg, rgba(34,197,94,.85), rgba(16,185,129,.55));"></div>
-        
-            <div class="tile-main">
-              <div class="tile-title">Полный рост</div>
-              <div class="tile-status ok">Загружено</div>
-            </div>
-          </div>
-        </div>        
+                    <div class="tiles" style="margin-top:12px;">
+                      <div class="tile tile-upload">
+                        <div class="ph"></div>
+                        <div class="tile-main">
+                          <div class="tile-title">Фото лица</div>
+                          <div class="tile-status ok">Загружено</div>
+                        </div>
+                      </div>
 
-		    <div class="card" style="margin-top:12px;">
-		      <b>Предпросмотр</b>
-		      <div class="preview-grid" style="margin-top:10px;">
-			  <div class="preview-box">
-			    <img src="assets/demo_face.jpg" alt="Демо фото лица" style="display:block;">
-			  </div>
-			  <div class="preview-box">
-			    <img src="assets/demo_full.jpg" alt="Демо фото в полный рост" style="display:block;">
-			  </div>
-			</div>
-		    </div>
-		  </div>
-		</div>
+                      <div class="tile tile-upload">
+                        <div class="ph" style="background:linear-gradient(135deg, rgba(34,197,94,.85), rgba(16,185,129,.55));"></div>
+                        <div class="tile-main">
+                          <div class="tile-title">Полный рост</div>
+                          <div class="tile-status ok">Загружено</div>
+                        </div>
+                      </div>
+                    </div>
 
+                    <div class="card" style="margin-top:12px;">
+                      <b>Предпросмотр</b>
+                      <div class="preview-grid" style="margin-top:10px;">
+                        <div class="preview-box">
+                          <img src="assets/demo_face.jpg" alt="Демо фото лица" style="display:block;">
+                        </div>
+                        <div class="preview-box">
+                          <img src="assets/demo_full.jpg" alt="Демо фото в полный рост" style="display:block;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <!-- Screen 3 -->
+                <!-- Screen 2 -->
                 <div class="demo-screen" data-title="Шаг 2 • Тип внешности" data-chip="Результат • AI">
                   <div class="card">
                     <div class="row">
-                      <div>
-                        <b>Определили тип</b>
-                      </div>
+                      <div><b>Определили тип</b></div>
                       <span class="tag">Готово</span>
                     </div>
 
                     <div class="tiles" style="margin-top:12px;">
-                      <div class="tile">
-                        <div class="ph"></div>
-                        <div><b>Подтон</b><small id="rUndertone">—</small></div>
-                        <div class="price">AI</div>
+                      <div class="rtile">
+                        <div class="ricon cool"></div>
+                        <div class="rcontent">
+                          <div class="rtitle">Подтон</div>
+                          <div class="rvalue" id="rUndertone">—</div>
+                        </div>
+                        <div class="rbadge">AI</div>
                       </div>
-                      <div class="tile">
-                        <div class="ph" style="background:linear-gradient(135deg, rgba(34,197,94,.85), rgba(16,185,129,.55));"></div>
-                        <div><b>Контраст</b><small id="rContrast">—</small></div>
-                        <div class="price">AI</div>
+                    
+                      <div class="rtile">
+                        <div class="ricon contrast"></div>
+                        <div class="rcontent">
+                          <div class="rtitle">Контраст</div>
+                          <div class="rvalue" id="rContrast">—</div>
+                        </div>
+                        <div class="rbadge">AI</div>
                       </div>
-                      <div class="tile">
-                        <div class="ph" style="background:linear-gradient(135deg, rgba(245,158,11,.85), rgba(239,68,68,.55));"></div>
-                        <div><b>Фигура</b><small id="rBody">—</small></div>
-                        <div class="price">AI</div>
+                    
+                      <div class="rtile">
+                        <div class="ricon body"></div>
+                        <div class="rcontent">
+                          <div class="rtitle">Фигура</div>
+                          <div class="rvalue" id="rBody">—</div>
+                        </div>
+                        <div class="rbadge">AI</div>
                       </div>
-                      <div class="tile">
-                        <div class="ph" style="background:linear-gradient(135deg, rgba(59,130,246,.85), rgba(99,102,241,.55));"></div>
-                        <div><b>Силуэты</b><small id="rSilhouette">—</small></div>
-                        <div class="price">Совет</div>
+                    
+                      <div class="rtile">
+                        <div class="ricon lines"></div>
+                        <div class="rcontent">
+                          <div class="rtitle">Силуэты</div>
+                          <div class="rvalue" id="rSilhouette">—</div>
+                        </div>
+                        <div class="rbadge advice">Совет</div>
                       </div>
-                    </div>
-
+                    </div>                    
                     <div class="card" style="margin-top:12px;">
                       <b>Почему это подходит</b>
                       <div class="muted" style="margin-top:6px; font-weight:750;" id="rWhy">
@@ -793,7 +175,7 @@
                   </div>
                 </div>
 
-                <!-- Screen: Generated outfit -->
+                <!-- Screen 3: Generated outfit -->
                 <div class="demo-screen" data-title="Шаг 3 • Образ готов" data-chip="Офис • AI">
                   <div class="card">
                     <div class="row">
@@ -807,13 +189,10 @@
 
                     <div class="card" style="margin-top:12px;">
                       <img
+                        class="reveal"
                         src="assets/demo_generated_office.jpeg"
                         alt="Сгенерированный офисный образ"
-                        style="
-                          width:100%;
-                          border-radius:14px;
-                          border:1px solid rgba(148,163,184,.16);
-                        "
+                        style="width:100%; border-radius:14px; border:1px solid rgba(148,163,184,.16);"
                       >
                     </div>
 
@@ -823,42 +202,114 @@
                   </div>
                 </div>
 
-                <!-- Screen 5 -->
+                <!-- Screen 4 -->
                 <div class="demo-screen" data-title="Шаг 4 • Вещи на образе" data-chip="Покупка • ссылки">
                   <div class="card">
                     <b>Вещи с этого образа</b>
                     <div class="muted">
                       Мы нашли похожие модели из магазинов — можно купить сразу.
                     </div>
-
-                    <div style="margin-top:12px; display:grid; gap:10px;">
-                      <div class="card">
-                        <div class="row">
-                          <b>Жакет</b>
-                          <span class="tag">3 варианта</span>
+                  
+                    <div style="margin-top:12px; display:grid; gap:12px;">
+                  
+                      <!-- ЖАКЕТ -->
+                      <div class="shop-group">
+                        <div class="shop-head">
+                          <div class="shop-title">
+                            <div class="picon blazer"></div>
+                            <b>Жакет</b>
+                          </div>
+                          <span class="shop-badge">2 варианта</span>
                         </div>
-                        <div style="margin-top:10px; display:grid; gap:8px;">
-                          <a class="tile" href="#" onclick="return false;">
-                            <div class="ph"></div>
-                            <div><b>Магазин A</b><small>₽ 3 450 • в наличии</small></div>
-                            <div class="price">Открыть</div>
+                  
+                        <div style="display:grid; gap:8px;">
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon blazer" style="width:34px;height:34px;border-radius:12px;"></div>
+                            <div class="info"><b>Магазин A</b><small>₽ 3 450 • в наличии</small></div>
+                            <div class="openbtn">Открыть</div>
                           </a>
-                          <a class="tile" href="#" onclick="return false;">
-                            <div class="ph" style="background:linear-gradient(135deg, rgba(34,197,94,.85), rgba(16,185,129,.55));"></div>
-                            <div><b>Магазин B</b><small>₽ 5 490 • доставка 2 дня</small></div>
-                            <div class="price">Открыть</div>
-                          </a>
-                          <a class="tile" href="#" onclick="return false;">
-                            <div class="ph" style="background:linear-gradient(135deg, rgba(59,130,246,.85), rgba(99,102,241,.55));"></div>
-                            <div><b>Маркетплейс</b><small>₽ 1 990 • похожая модель</small></div>
-                            <div class="price">Открыть</div>
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon blazer" style="width:34px;height:34px;border-radius:12px; filter: hue-rotate(-18deg);"></div>
+                            <div class="info"><b>Маркетплейс</b><small>₽ 1 990 • похожая модель</small></div>
+                            <div class="openbtn">Открыть</div>
                           </a>
                         </div>
                       </div>
-
+                  
+                      <!-- БЛУЗКА -->
+                      <div class="shop-group">
+                        <div class="shop-head">
+                          <div class="shop-title">
+                            <div class="picon blouse"></div>
+                            <b>Блузка</b>
+                          </div>
+                          <span class="shop-badge">2 варианта</span>
+                        </div>
+                  
+                        <div style="display:grid; gap:8px;">
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon blouse" style="width:34px;height:34px;border-radius:12px;"></div>
+                            <div class="info"><b>Магазин A</b><small>₽ 2 490 • хлопок/вискоза</small></div>
+                            <div class="openbtn">Открыть</div>
+                          </a>
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon blouse" style="width:34px;height:34px;border-radius:12px; filter: hue-rotate(-20deg);"></div>
+                            <div class="info"><b>Маркетплейс</b><small>₽ 1 690 • аналог по цвету</small></div>
+                            <div class="openbtn">Открыть</div>
+                          </a>
+                        </div>
+                      </div>
+                  
+                      <!-- БРЮКИ -->
+                      <div class="shop-group">
+                        <div class="shop-head">
+                          <div class="shop-title">
+                            <div class="picon pants"></div>
+                            <b>Брюки</b>
+                          </div>
+                          <span class="shop-badge">2 варианта</span>
+                        </div>
+                  
+                        <div style="display:grid; gap:8px;">
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon pants" style="width:34px;height:34px;border-radius:12px;"></div>
+                            <div class="info"><b>Магазин A</b><small>₽ 4 990 • высокая посадка</small></div>
+                            <div class="openbtn">Открыть</div>
+                          </a>
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon pants" style="width:34px;height:34px;border-radius:12px; filter: hue-rotate(-16deg);"></div>
+                            <div class="info"><b>Маркетплейс</b><small>₽ 3 490 • похожая модель</small></div>
+                            <div class="openbtn">Открыть</div>
+                          </a>
+                        </div>
+                      </div>
+                  
+                      <!-- ТУФЛИ -->
+                      <div class="shop-group">
+                        <div class="shop-head">
+                          <div class="shop-title">
+                            <div class="picon shoes"></div>
+                            <b>Туфли</b>
+                          </div>
+                          <span class="shop-badge">2 варианта</span>
+                        </div>
+                  
+                        <div style="display:grid; gap:8px;">
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon shoes" style="width:34px;height:34px;border-radius:12px;"></div>
+                            <div class="info"><b>Магазин A</b><small>₽ 5 490 • лоферы/каблук low</small></div>
+                            <div class="openbtn">Открыть</div>
+                          </a>
+                          <a class="shop-item" href="#" onclick="return false;">
+                            <div class="picon shoes" style="width:34px;height:34px;border-radius:12px; filter: hue-rotate(-14deg);"></div>
+                            <div class="info"><b>Маркетплейс</b><small>₽ 3 990 • похожий силуэт</small></div>
+                            <div class="openbtn">Открыть</div>
+                          </a>
+                        </div>
+                      </div>
                       <div class="hint">В реальном приложении ссылки учитывают размер, цвет и доступность.</div>
                     </div>
-                  </div>
+                  </div>                  
                 </div>
               </div>
 
@@ -1031,156 +482,6 @@
   </div>
 </footer>
 
-<script>
-  // ---------- WAITLIST (Netlify Function) ----------
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("waitlistForm");
-    const note = document.getElementById("formNote");
-    const emailInput = document.getElementById("email");
-
-    if (form) {
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault(); // <- предотвращает перезагрузку и "?"
-
-        const email = (emailInput?.value || "").trim();
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          note.textContent = "Похоже, email введён некорректно.";
-          return;
-        }
-
-        note.textContent = "Сохраняем…";
-
-        try {
-          const res = await fetch("/api/subscribe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email })
-          });
-
-          const data = await res.json().catch(() => ({}));
-
-          if (!res.ok || !data.ok) {
-            note.textContent = data.error || "Не получилось сохранить. Попробуй ещё раз.";
-            return;
-          }
-
-          note.textContent = "Готово! Email сохранён. Мы напишем, когда откроем ранний доступ.";
-          form.reset();
-
-          // если когда-то уже появился вопросик в URL — убрать
-          history.replaceState({}, "", location.pathname + location.hash);
-        } catch (err) {
-          note.textContent = "Ошибка сети. Проверь интернет и попробуй ещё раз.";
-        }
-      });
-    }
-
-    // ---------- STATUSBAR TIME ----------
-    function setSBTime() {
-      const d = new Date();
-      const hh = String(d.getHours()).padStart(2, "0");
-      const mm = String(d.getMinutes()).padStart(2, "0");
-      const el = document.getElementById("sbTime");
-      if (el) el.textContent = `${hh}:${mm}`;
-    }
-    setSBTime();
-    setInterval(setSBTime, 15000);
-
-    // ---------- DEMO NAV ----------
-    const screens = Array.from(document.querySelectorAll(".demo-screen"));
-    const titleEl = document.getElementById("demoTitle");
-    const chipEl = document.getElementById("demoChip");
-    const prevBtn = document.getElementById("prevDemo");
-    const nextBtn = document.getElementById("nextDemo");
-    const dotsWrap = document.getElementById("demoDots");
-
-    const overlay = document.getElementById("overlay");
-    const bar = document.getElementById("bar");
-    const overlayText = document.getElementById("overlayText");
-
-    let current = 0;
-
-    const dots = screens.map(() => {
-      const d = document.createElement("span");
-      d.className = "dot2";
-      dotsWrap?.appendChild(d);
-      return d;
-    });
-
-    function showScreen(i) {
-      current = Math.max(0, Math.min(i, screens.length - 1));
-      screens.forEach((s, idx) => s.classList.toggle("active", idx === current));
-      dots.forEach((d, idx) => d.classList.toggle("active", idx === current));
-
-      if (titleEl) titleEl.textContent = screens[current]?.dataset?.title || `Шаг ${current + 1}`;
-      if (chipEl) chipEl.textContent = screens[current]?.dataset?.chip || "demo";
-      if (prevBtn) prevBtn.disabled = current === 0;
-    }
-
-    function fakeAnalyzeThenGoNext() {
-      if (!overlay || !bar || !overlayText) {
-        showScreen(current + 1);
-        return;
-      }
-
-      overlay.classList.add("active");
-      bar.style.width = "0%";
-
-      const steps = [
-        { p: 25, t: "Определяем подтон и контраст по фото лица…" },
-        { p: 55, t: "Считываем силуэт и пропорции по фото в полный рост…" },
-        { p: 80, t: "Подбираем палитру и базовые линии…" },
-        { p: 100, t: "Собираем офисный образ и ссылки на товары…" }
-      ];
-
-      let k = 0;
-      const timer = setInterval(() => {
-        overlayText.textContent = steps[k].t;
-        bar.style.width = steps[k].p + "%";
-        k++;
-        if (k >= steps.length) {
-          clearInterval(timer);
-          setTimeout(() => {
-            overlay.classList.remove("active");
-            showScreen(current + 1);
-          }, 400);
-        }
-      }, 420);
-    }
-
-    prevBtn?.addEventListener("click", () => showScreen(current - 1));
-    nextBtn?.addEventListener("click", () => {
-      if (current === 0) {
-        fakeAnalyzeThenGoNext();
-        return;
-      }
-      if (current === screens.length - 1) showScreen(0);
-      else showScreen(current + 1);
-    });
-
-    showScreen(0);
-
-    // ---------- FIXED DEMO DATA (NO UPLOADS) ----------
-    const setText = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = val;
-    };
-
-    // analysis result
-    setText("rUndertone", "холодный");
-    setText("rContrast", "средний–высокий");
-    setText("rBody", "баланс");
-    setText("rSilhouette", "прямой");
-    setText("rWhy", "Холодная палитра и средне-высокий контраст усиливают черты лица, а прямые линии аккуратно “собирают” силуэт.");
-
-    // office outfit
-    setText("oBlazer", "прямой жакет, серый/графит");
-    setText("oShirt", "рубашка: белый/голубой (холодный)");
-    setText("oPants", "брюки прямые, высокая посадка");
-    setText("oShoes", "лоферы / туфли, тёмные");
-    setText("oWhy", "Для офиса выбрана сдержанная палитра и чистые линии: выглядит профессионально и легко комбинируется.");
-  });
-</script>
+<script src="js/app.js" defer></script>
 </body>
 </html>
-
