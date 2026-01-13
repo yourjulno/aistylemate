@@ -1053,5 +1053,52 @@
     border-color: rgba(245,158,11,.28);
     background: rgba(245,158,11,.12);
   }
+  /* ----- Fixed phone size + inner scroll ----- */
+
+/* сам телефон не должен прыгать по высоте */
+.phone{
+  height: 620px;              /* фикс высота (можешь менять) */
+  min-height: 620px;
+}
+
+/* внутренняя "матрица" экрана — тоже фикс */
+.bezel{ height: calc(100% - 24px); }          /* 12px margin сверху+снизу */
+.screenWrap{ height: 100%; min-height: 100%; }
+
+/* контент скроллится ВНУТРИ экрана, а не меняет высоту телефона */
+.appcontent{
+  height: calc(100% - 86px);  /* вычитаем topbar+status+notch + bottom bar */
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 90px;       /* чтобы не пряталось под bottombar */
+}
+
+/* оставляем нижнюю панель всегда видимой */
+.bottombar{
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+}
+
+/* на мобилке — более "реальный" размер */
+@media (max-width: 520px){
+  .phone{
+    height: 640px;            /* на мобилке обычно чуть выше */
+    min-height: 640px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* safe-area для айфонов */
+  @supports (padding: max(0px)) {
+    .appcontent{
+      padding-bottom: max(96px, calc(72px + env(safe-area-inset-bottom)));
+    }
+    .bottombar{
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+  }
+}
+
   
   

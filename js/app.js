@@ -147,6 +147,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById(id);
       if (el) el.textContent = val;
     };
+
+    const content = document.querySelector(".appcontent");
+    if (content) content.scrollTop = 0;
   
     setText("rUndertone", "холодный");
     setText("rContrast", "средний–высокий");
