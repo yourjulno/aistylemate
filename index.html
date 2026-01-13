@@ -83,7 +83,7 @@
               <div class="appcontent" id="demoScreens">
                 <!-- Screen 1 -->
                 <div class="demo-screen active" data-title="Шаг 1 • Загрузка фото" data-chip="Офис • demo">
-                  <div class="card">
+                  <div class="card previewCard">
                     <div class="row">
                       <b>Добавьте фото</b>
                       <span class="tag">Локально</span>
@@ -122,58 +122,40 @@
                 </div>
 
                 <!-- Screen 2 -->
-                <div class="demo-screen" data-title="Шаг 2 • Тип внешности" data-chip="Результат • AI">
-                  <div class="card">
+                <div class="demo-screen" data-title="Шаг 2 • Типаж">
+                  <div class="card previewCard">
                     <div class="row">
-                      <div><b>Определили тип</b></div>
+                      <b>Твой типаж</b>
                       <span class="tag">Готово</span>
                     </div>
-
-                    <div class="tiles" style="margin-top:12px;">
-                      <div class="rtile">
-                        <div class="ricon cool"></div>
-                        <div class="rcontent">
-                          <div class="rtitle">Подтон</div>
-                          <div class="rvalue" id="rUndertone">—</div>
+                
+                    <div class="archetype" style="margin-top:12px;">
+                      <div class="archetype-top">
+                        <div class="archetype-title">
+                          <div class="moonIcon"></div>
+                          <div style="min-width:0;">
+                            <h3 id="archName">Луна</h3>
+                            <div class="archetype-sub" id="archShort">мягкие черты • сияющий образ • спокойная гармония</div>
+                          </div>
                         </div>
-                        <div class="rbadge">AI</div>
+                        <div class="archetype-badge">AI</div>
                       </div>
-                    
-                      <div class="rtile">
-                        <div class="ricon contrast"></div>
-                        <div class="rcontent">
-                          <div class="rtitle">Контраст</div>
-                          <div class="rvalue" id="rContrast">—</div>
-                        </div>
-                        <div class="rbadge">AI</div>
+                
+                      <div class="archetype-why">
+                        <p id="archWhy">
+                          У тебя мягкие, сглаженные линии и спокойный контраст: образ выглядит светлым, нежным и гармоничным — это и есть вайб типажа “Луна”
+                        </p>
                       </div>
-                    
-                      <div class="rtile">
-                        <div class="ricon body"></div>
-                        <div class="rcontent">
-                          <div class="rtitle">Фигура</div>
-                          <div class="rvalue" id="rBody">—</div>
-                        </div>
-                        <div class="rbadge">AI</div>
-                      </div>
-                    
-                      <div class="rtile">
-                        <div class="ricon lines"></div>
-                        <div class="rcontent">
-                          <div class="rtitle">Силуэты</div>
-                          <div class="rvalue" id="rSilhouette">—</div>
-                        </div>
-                        <div class="rbadge advice">Совет</div>
-                      </div>
-                    </div>                    
-                    <div class="card" style="margin-top:12px;">
-                      <b>Почему это подходит</b>
-                      <div class="muted" style="margin-top:6px; font-weight:750;" id="rWhy">
-                        Загрузите 2 фото, чтобы демо заполнилось “под вас”.
+                
+                      <div class="archetype-chips" aria-label="Признаки типажа">
+                        <span class="achip"><i></i><span id="archChip1">мягкие черты лица</span></span>
+                        <span class="achip"><i></i><span id="archChip2">ровные пропорции</span></span>
+                        <span class="achip"><i></i><span id="archChip3">спокойный контраст</span></span>
+                        <span class="achip"><i></i><span id="archChip4">лучше смотрятся плавные линии</span></span>
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>                
 
                 <!-- Screen 3: Generated outfit -->
                 <div class="demo-screen" data-title="Шаг 3 • Образ готов" data-chip="Офис • AI">
@@ -391,22 +373,22 @@
         <div class="feature">
           <div class="icon">🔗</div>
           <h3>Ссылки на вещи</h3>
-          <p>Несколько магазинов на каждую вещь — выбираешь по цене и наличию.</p>
+          <p>Несколько магазинов на каждую вещь — выбираешь по цене и наличию</p>
         </div>
         <div class="feature">
           <div class="icon">🎛️</div>
           <h3>Фильтры и бюджет</h3>
-          <p>Настраивай стиль и бюджет — рекомендации подстраиваются под тебя.</p>
+          <p>Настраивай стиль и бюджет — рекомендации подстраиваются под тебя</p>
         </div>
         <div class="feature">
           <div class="icon">💾</div>
           <h3>Сохранение образов</h3>
-          <p>Сохраняй понравившиеся комплекты и возвращайся к ним позже.</p>
+          <p>Сохраняй понравившиеся комплекты и возвращайся к ним позже</p>
         </div>
         <div class="feature">
           <div class="icon">🧠</div>
-          <h3>Объяснимость</h3>
-          <p>Показываем “почему подходит”: палитра, силуэт и ключевые детали.</p>
+          <h3>Выбор маркетплейса</h3>
+          <p>Возможность выбора нужного маркетплейса</p>
         </div>
       </div>
     </div>

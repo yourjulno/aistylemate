@@ -9,13 +9,20 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
   
         const email = (emailInput?.value || "").trim();
+        const setNote = (type, text) => {
+            note.classList.remove("ok", "err");
+            if (type) note.classList.add(type);
+            const icon = type === "ok" ? "✅" : type === "err" ? "⚠️" : "⏳";
+            note.innerHTML = `<span class="nicon">${icon}</span>${text}`;
+          };
+
+        setNote("", "Сохраняем…");
+
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          note.textContent = "Похоже, email введён некорректно.";
-          return;
+        setNote("err", "Похоже, email введён некорректно.");
+        return;
         }
-  
-        note.textContent = "Сохраняем…";
-  
+
         try {
           const res = await fetch("/api/subscribe", {
             method: "POST",
@@ -26,15 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
           const data = await res.json().catch(() => ({}));
   
           if (!res.ok || !data.ok) {
-            note.textContent = data.error || "Не получилось сохранить. Попробуй ещё раз.";
+            setNote("err", data.error || "Не получилось сохранить. Попробуй ещё раз.");
             return;
-          }
+            }
   
-          note.textContent = "Готово! Email сохранён. Мы напишем, когда откроем ранний доступ.";
-          form.reset();
-          history.replaceState({}, "", location.pathname + location.hash);
-        } catch (err) {
-          note.textContent = "Ошибка сети. Проверь интернет и попробуй ещё раз.";
+            setNote("ok", "Готово! Email сохранён. Мы напишем, когда откроем ранний доступ.");
+            form.reset();
+            history.replaceState({}, "", location.pathname + location.hash);
+        } catch {
+            setNote("err", "Ошибка сети. Проверь интернет и попробуй ещё раз.");
         }
       });
     }

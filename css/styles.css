@@ -875,4 +875,183 @@
     }
     .navbtn{padding: 10px 12px; border-radius: 14px;}
   }
+  /* --- tiktok archetype card --- */
+.archetype{
+    border-radius: 18px;
+    border: 1px solid rgba(148,163,184,.16);
+    background: rgba(2,6,23,.60);
+    padding: 14px;
+  }
+  
+  .archetype-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  
+  .archetype-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+  }
+  
+  .moonIcon{
+    width:44px;
+    height:44px;
+    border-radius: 14px;
+    border:1px solid rgba(255,255,255,.10);
+    background: radial-gradient(circle at 30% 30%, rgba(226,232,240,.85), rgba(59,130,246,.35) 55%, rgba(139,92,246,.30) 100%);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    flex: 0 0 auto;
+  }
+  
+  .archetype-title h3{
+    margin:0;
+    font-size: 16px;
+    font-weight: 950;
+    letter-spacing: -.2px;
+  }
+  
+  .archetype-sub{
+    margin-top:4px;
+    color: rgba(148,163,184,.95);
+    font-weight: 850;
+    font-size: 12px;
+  }
+  
+  .archetype-badge{
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 950;
+    border: 1px solid rgba(139,92,246,.26);
+    background: rgba(139,92,246,.12);
+    color: #ddd6fe;
+    white-space: nowrap;
+  }
+  
+  .archetype-why{
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(148,163,184,.14);
+    background: rgba(148,163,184,.06);
+  }
+  
+  .archetype-why b{
+    display:block;
+    margin-bottom: 6px;
+    font-weight: 950;
+  }
+  
+  .archetype-why p{
+    margin:0;
+    color: rgba(226,232,240,.90);
+    font-weight: 800;
+    line-height: 1.35;
+  }
+  
+  .archetype-chips{
+    margin-top: 12px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  
+  .achip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,.16);
+    background: rgba(148,163,184,.06);
+    color: rgba(226,232,240,.92);
+    font-weight: 900;
+    font-size: 12px;
+  }
+  
+  .achip i{
+    width:10px; height:10px; border-radius:50%;
+    background: rgba(139,92,246,.90);
+    box-shadow: 0 0 0 6px rgba(139,92,246,.12);
+    display:inline-block;
+  }
+  
+  @media (max-width:520px){
+    .moonIcon{width:40px;height:40px;border-radius:13px;}
+    .archetype-title h3{font-size:15px;}
+  }
+/* --- reduce borders in Screen 1 preview --- */
+
+/* убираем внутреннюю рамку у карточки предпросмотра */
+.card.previewCard{
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  /* сами боксы под фото без рамок */
+  .preview-box{
+    border: 0 !important;
+    background: rgba(148,163,184,.04) !important; /* лёгкая подложка */
+    padding: 8px !important;
+  }
+  
+  /* убираем рамку у картинки, делаем чище */
+  .preview-box img{
+    border: 0 !important;
+    border-radius: 14px !important;
+  }
+  
+  /* можно чуть смягчить разделитель в большом card (по желанию) */
+  .card{
+    border-color: rgba(148,163,184,.12);
+  }
+  /* чтобы контент не прятался за нижней панелью */
+.appcontent{
+    padding-bottom: 86px; /* запас под bottombar */
+  }
+  
+  /* на айфонах с “домиком” ещё чуть больше */
+  @supports (padding: max(0px)) {
+    .appcontent{
+      padding-bottom: max(86px, calc(66px + env(safe-area-inset-bottom)));
+    }
+  }
+  /* status note with icon */
+.note.ok{
+    color: rgba(187,247,208,.95);
+    font-weight: 850;
+  }
+  .note.err{
+    color: rgba(254,243,199,.95);
+    font-weight: 850;
+  }
+  .note .nicon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:18px;
+    height:18px;
+    margin-right:8px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,.18);
+    background: rgba(148,163,184,.08);
+    font-size:12px;
+    line-height:1;
+    vertical-align: -2px;
+  }
+  .note.ok .nicon{
+    border-color: rgba(34,197,94,.28);
+    background: rgba(34,197,94,.12);
+  }
+  .note.err .nicon{
+    border-color: rgba(245,158,11,.28);
+    background: rgba(245,158,11,.12);
+  }
+  
   
