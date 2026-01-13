@@ -795,4 +795,84 @@
     .preview-box{min-height: 220px;}
   }
   
+  /* --- Mobile polish for phone demo --- */
+@media (max-width: 520px){
+
+    .container{padding: 0 14px;}
+  
+    .hero{padding: 28px 0 14px;}
+  
+    /* верхний блок: текст + демо в колонку */
+    .grid-hero{
+      grid-template-columns: 1fr !important;
+      gap: 16px;
+    }
+  
+    /* сам "телефон" */
+    .phone{
+      min-height: 0;
+      border-radius: 28px;
+    }
+    .bezel{
+      margin: 10px;
+      padding: 8px;
+      border-radius: 24px;
+    }
+    .screenWrap{
+      min-height: 0;
+      border-radius: 18px;
+    }
+  
+    /* чтобы контент не упирался в bottom bar */
+    .appcontent{
+      padding: 12px 12px 74px; /* важное: запас снизу */
+      gap: 10px;
+    }
+  
+    /* топбар приложения */
+    .apptop{
+      padding: 42px 12px 10px;
+    }
+    .apptitle{font-size: 13px;}
+    .appsub{font-size: 11px;}
+    .chip{font-size: 11px; padding: 6px 9px;}
+  
+    /* карточки внутри экрана */
+    .card{padding: 11px; border-radius: 16px;}
+  
+    /* сетки */
+    .tiles{
+      grid-template-columns: 1fr;  /* на мобилке в одну колонку */
+      gap: 8px;
+    }
+  
+    /* плитки */
+    .tile, .rtile, .shop-item{
+      padding: 10px;
+      border-radius: 14px;
+    }
+  
+    /* иконки меньше */
+    .ph{width:40px;height:40px;border-radius: 13px;}
+    .ricon{width:40px;height:40px;border-radius: 13px;}
+    .picon{width:34px;height:34px;border-radius: 12px;}
+  
+    /* бейджи компактнее */
+    .price, .rbadge, .openbtn, .shop-badge, .tag{
+      font-size: 11px;
+      padding: 6px 9px;
+    }
+  
+    /* "Почему это подходит" — чтобы не было огромных переносов */
+    #rWhy{
+      font-size: 13px;
+      line-height: 1.35;
+    }
+  
+    /* нижняя панель навигации */
+    .bottombar{
+      padding: 10px 10px;
+    }
+    .navbtn{padding: 10px 12px; border-radius: 14px;}
+  }
   
