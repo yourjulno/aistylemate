@@ -1099,6 +1099,55 @@
     }
   }
 }
+/* --- Mobile fix for Screen 1 upload tiles --- */
+@media (max-width: 520px){
+
+  /* на первом экране делаем 1 колонку, но нормальные строки */
+  .demo-upload .tiles{
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* плитка — горизонтальная, как в приложении */
+  .demo-upload .tile-upload{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding: 12px;
+  }
+
+  /* иконка всегда одинаковая */
+  .demo-upload .tile-upload .ph{
+    width:44px;
+    height:44px;
+    flex: 0 0 44px;
+    border-radius: 14px;
+  }
+
+  /* текстовый блок занимает остаток */
+  .demo-upload .tile-upload .tile-main{
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* заголовок 1 строка */
+  .demo-upload .tile-upload .tile-title{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+  }
+
+  /* статус под заголовком — НЕ растягивается на всю ширину */
+  .demo-upload .tile-upload .tile-status{
+    display:inline-flex;
+    width: fit-content;
+    margin-top: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 999px;
+  }
+}
 
   
   
