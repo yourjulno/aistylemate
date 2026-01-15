@@ -1,4 +1,9 @@
 <?php
+
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 // ВКЛЮЧАЕМ ОТЛАДКУ
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -38,8 +43,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 // ДАННЫЕ БД - ЗАМЕНИТЕ НА ВАШИ!
 $host = 'localhost';
-$dbname = 'stylemate_db'; // ваше имя БД
-$username = 'stylemate_user'; // ваш пользователь
+$dbname = 'u3380884_stylemate_db'; // ваше имя БД
+$username = 'u3380884_stylemate_user'; // ваш пользователь
 $password = '938520eeEERR'; // ваш пароль
 
 file_put_contents($logFile, "Пытаемся подключиться к БД: $dbname, пользователь: $username\n", FILE_APPEND);

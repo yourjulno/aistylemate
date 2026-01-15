@@ -1,82 +1,107 @@
-console.log("app.js загружен!");
+// /js/app.js
+console.log("APP BUILD MARK:", "2026-01-15__clean_v2");
 
-// Простой тест формы
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM загружен!");
-    
-    const form = document.getElementById("waitlistForm");
-    if (form) {
-        console.log("Форма найдена!");
-        
-        form.addEventListener("submit", function(e) {
-            e.preventDefault(); // Это ОЧЕНЬ важно!
-            console.log("Форма отправлена!");
-            alert("Тест: форма работает!");
-        });
-    }
+  console.log("=== STYLEMATE APP START ===");
+
+  initWaitlist();
+  initStatusbarTime();
+  initDemoNav();
+  initFixedDemoData();
 });
-  
-  // ---------- WAITLIST FORM (БД на reg.ru) ----------
+
+function initWaitlist() {
   const form = document.getElementById("waitlistForm");
   const note = document.getElementById("formNote");
-  const emailInput = document.getElementById("email");
 
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  if (!form || !note) {
+    console.error("❌ waitlistForm/formNote не найдены");
+    return;
+  }
 
-      const email = (emailInput?.value || "").trim();
-      
-      // Валидация
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        note.textContent = "Похоже, email введён некорректно.";
-        note.style.color = '#ef4444';
-        return;
-      }
+  let inflight = false;
 
-      // Показываем статус отправки
-      note.textContent = "Сохраняем…!!!";
-      note.style.color = '';
+  // Реакция "при вводе" (то, что ты ожидаешь)
+  const emailInput = form.querySelector("#email");
+  if (emailInput) {
+    emailInput.addEventListener("input", () => {
+      note.textContent = "";
+      note.style.color = "";
+    });
 
-      try {
-        // Отправляем на ваш subscribe.php
-        const res = await fetch("/subscribe.php", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email })
-        });
-
-        // Парсим ответ
-        const data = await res.json();
-        
-        console.log("Ответ от сервера:", data); // для отладки
-
-        if (data.ok) {
-          // УСПЕХ
-          note.textContent = "✓ Готово! Email сохранён. Мы напишем, когда откроем ранний доступ.";
-          note.style.color = '#10b981';
-          form.reset();
-          
-          // Через 5 секунд скрыть сообщение
-          setTimeout(() => {
-            note.textContent = '';
-          }, 5000);
-        } else {
-          // ОШИБКА С СЕРВЕРА
-          note.textContent = "✗ " + (data.error || "Не получилось сохранить. Попробуй ещё раз.");
-          note.style.color = '#ef4444';
-        }
-      } catch (err) {
-        console.error("Ошибка отправки:", err);
-        note.textContent = "✗ Ошибка сети. Проверь интернет и попробуй ещё раз.";
-        note.style.color = '#ef4444';
-      }
+    emailInput.addEventListener("blur", () => {
+      const email = emailInput.value.trim();
+      if (!email) return;
+      if (!isValidEmail(email)) setNote(note, "✗ Введите корректный email", "#ef4444");
     });
   }
 
-  // ---------- STATUSBAR TIME ----------
+  // Один обработчик submit. Важно: НЕ stopPropagation — иначе ломаем другие листенеры.
+  document.addEventListener(
+    "submit",
+    async (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLFormElement)) return;
+      if (target.id !== "waitlistForm") return;
+
+      e.preventDefault(); // убираем перезагрузку
+      console.log("WAITLIST submit ✅");
+
+      if (inflight) return;
+      inflight = true;
+
+      const submitBtn = target.querySelector('button[type="submit"]');
+      const input = target.querySelector("#email");
+      const email = (input?.value || "").trim();
+
+      try {
+        if (!email || !isValidEmail(email)) {
+          setNote(note, "✗ Введите корректный email", "#ef4444");
+          return;
+        }
+
+        setNote(note, "Отправка...", "");
+        submitBtn?.setAttribute("disabled", "disabled");
+
+        const res = await fetch("/subscribe.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+          cache: "no-store",
+        });
+
+        const json = await res.json().catch(() => null);
+        console.log("subscribe.php:", res.status, json);
+
+        if (res.ok && json?.ok) {
+          setNote(note, "✓ Спасибо! Вы в списке ожидания.", "#10b981");
+          if (input) input.value = "";
+          setTimeout(() => (note.textContent = ""), 5000);
+        } else {
+          setNote(note, "✗ " + (json?.error || "Ошибка сервера"), "#ef4444");
+        }
+      } catch (err) {
+        console.error(err);
+        setNote(note, "✗ Ошибка сети", "#ef4444");
+      } finally {
+        inflight = false;
+        submitBtn?.removeAttribute("disabled");
+      }
+    },
+    true
+  );
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function setNote(noteEl, text, color) {
+  noteEl.textContent = text;
+  noteEl.style.color = color || "";
+}
+
+function initStatusbarTime() {
   function setSBTime() {
     const d = new Date();
     const hh = String(d.getHours()).padStart(2, "0");
@@ -86,8 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setSBTime();
   setInterval(setSBTime, 15000);
+}
 
-  // ---------- DEMO NAV ----------
+function initDemoNav() {
   const screens = Array.from(document.querySelectorAll(".demo-screen"));
   const titleEl = document.getElementById("demoTitle");
   const chipEl = document.getElementById("demoChip");
@@ -98,6 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("overlay");
   const bar = document.getElementById("bar");
   const overlayText = document.getElementById("overlayText");
+
+  if (!screens.length) return;
 
   let current = 0;
 
@@ -111,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function retriggerReveal() {
     document.querySelectorAll(".demo-screen.active .reveal").forEach((el) => {
       el.classList.remove("reveal");
-      void el.offsetWidth; // force reflow
+      void el.offsetWidth;
       el.classList.add("reveal");
     });
   }
@@ -141,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { p: 25, t: "Определяем подтон и контраст по фото лица…" },
       { p: 55, t: "Считываем силуэт и пропорции по фото в полный рост…" },
       { p: 80, t: "Подбираем палитру и базовые линии…" },
-      { p: 100, t: "Собираем офисный образ и ссылки на товары…" }
+      { p: 100, t: "Собираем офисный образ и ссылки на товары…" },
     ];
 
     let k = 0;
@@ -161,18 +189,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   prevBtn?.addEventListener("click", () => showScreen(current - 1));
   nextBtn?.addEventListener("click", () => {
-    // After screen 1 -> show analysis overlay
-    if (current === 0) {
-      fakeAnalyzeThenGoNext();
-      return;
-    }
+    if (current === 0) return fakeAnalyzeThenGoNext();
     if (current === screens.length - 1) showScreen(0);
     else showScreen(current + 1);
   });
 
   showScreen(0);
+}
 
-  // ---------- FIXED DEMO DATA ----------
+function initFixedDemoData() {
   const setText = (id, val) => {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
@@ -185,5 +210,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setText("rContrast", "средний–высокий");
   setText("rBody", "баланс");
   setText("rSilhouette", "прямой");
-  setText("rWhy", "Холодная палитра и средне-высокий контраст усиливают черты лица, а прямые линии аккуратно 'собирают' силуэт.");
-;
+  setText(
+    "rWhy",
+    "Холодная палитра и средне-высокий контраст усиливают черты лица, а прямые линии аккуратно 'собирают' силуэт."
+  );
+}
