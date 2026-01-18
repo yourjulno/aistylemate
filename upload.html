@@ -1,0 +1,155 @@
+<!-- FILE: /upload.html -->
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#071226">
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="assets/favicon.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+
+  <title>STYLEMATE AI — загрузка фото</title>
+  <meta name="description" content="Загрузи 2 фото — получи персональную подборку образов" />
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/upload.css">
+</head>
+
+<body class="page-upload">
+<header>
+  <div class="container">
+    <div class="nav">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>STYLEMATE AI</div>
+      </div>
+
+      <nav class="navlinks">
+        <a href="index.html#how">Как работает</a>
+        <a href="index.html#features">Функции</a>
+        <a href="index.html#demo">Демо</a>
+        <a href="index.html#faq">FAQ</a>
+      </nav>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a class="btn ghost" href="index.html#waitlist">В лист ожидания</a>
+        <a class="btn primary" href="index.html#demo">Смотреть демо</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="upload-hero" aria-label="Загрузка 2 фото">
+    <div class="upload-bg" aria-hidden="true"></div>
+
+    <div class="container">
+      <div class="upload-wrap">
+        <div class="upload-badge">
+          <span class="dot"></span>
+          <span>Личный AI-стилист</span>
+        </div>
+
+        <h1 class="upload-title">Загрузи 2 фото —<br>получи стильные образы</h1>
+
+        <p class="upload-sub">
+          Загрузи 2 фото: лицо + полный рост. ИИ подберёт стильные образы под твою внешность
+          с вариантами по бюджету и ссылками на вещи
+        </p>
+
+        <form id="uploadForm">
+          <div class="upload-grid">
+            <!-- FACE -->
+            <div class="upload-card">
+              <div class="upload-card-head">
+                <b>Фото лица</b>
+                <span class="upload-chip" id="faceChip">Не загружено</span>
+              </div>
+
+              <ul class="upload-list">
+                <li>Прямой взгляд в камеру</li>
+                <li>Хороший свет (не слишком темно)</li>
+                <li>Без фильтров и макияжа</li>
+              </ul>
+
+              <input id="faceInput" name="face" class="file-input" type="file" accept="image/*" />
+              <label class="btn primary upload-btn" for="faceInput">Загрузить фото</label>
+
+              <div class="upload-hint">Подсказка: селфи с хорошим светом</div>
+            </div>
+
+            <!-- FULL -->
+            <div class="upload-card">
+              <div class="upload-card-head">
+                <b>Фото в полный рост</b>
+                <span class="upload-chip" id="fullChip">Не загружено</span>
+              </div>
+
+              <ul class="upload-list">
+                <li>Рост в полный кадр</li>
+                <li>Ровная поза, стоя лицом к камере</li>
+                <li>В полный рост, без отдалений</li>
+              </ul>
+
+              <input id="fullInput" name="full" class="file-input" type="file" accept="image/*" />
+              <label class="btn primary upload-btn" for="fullInput">Загрузить фото</label>
+
+              <div class="upload-hint">Подсказка: кадр в полный рост без фильтров</div>
+            </div>
+          </div>
+
+          <div class="upload-actions">
+            <input id="uploadEmail" name="email" type="email" placeholder="Твой email" required>
+            <button class="btn primary upload-submit" id="sendToAiBtn" type="submit" disabled>
+              Готово, отправить AI
+            </button>
+          </div>
+
+          <p class="note" id="uploadNote" aria-live="polite"></p>
+        </form>
+
+        <div class="upload-foot">
+          <span>⏱️ 2–3 минуты до результата</span>
+          <span>🖼️ 2 фото: лицо + полный рост</span>
+          <span>🧠 Объясняет: почему подходит</span>
+        </div>
+
+        <p class="upload-legal">
+          Нажимая «Готово, отправить AI», ты соглашаешься с условиями использования
+        </p>
+
+        <div style="margin-top:14px;">
+          <a class="btn ghost" href="index.html">← На главную</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div class="logo" style="width:28px;height:28px;border-radius:10px;"></div>
+        <b>STYLEMATE AI</b>
+        <span style="opacity:.75;">© 2026</span>
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="index.html#how">Как работает</a><span style="opacity:.5;">•</span>
+        <a href="index.html#features">Функции</a><span style="opacity:.5;">•</span>
+        <a href="index.html#waitlist">Ранний доступ</a><span style="opacity:.5;">•</span>
+        <a href="mailto:stylemate.ai@mail.ru">stylemate.ai@mail.ru</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- FILE: /upload.html  (замени только блок со скриптами внизу) -->
+<!-- ... -->
+<script src="js/app.js?v=20260115-6"></script>
+<script src="js/upload.js?v=20260115-1"></script>
+</body>
+</html>
+

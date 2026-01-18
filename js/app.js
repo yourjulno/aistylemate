@@ -1,27 +1,20 @@
-// /js/app.js
-console.log("APP BUILD MARK:", "2026-01-15__clean_v2");
+// FILE: /js/app.js
+// Keep this file in /js/app.js (NOT embedded in HTML).
+
+console.log("APP BUILD MARK:", "2026-01-18__upload_backend_v1");
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("=== STYLEMATE APP START ===");
-
-  initWaitlist();
-  initStatusbarTime();
-  initDemoNav();
-  initFixedDemoData();
+  initWaitlist();       // index.html waitlist
+  initUploadForm();     // upload.html
 });
 
 function initWaitlist() {
   const form = document.getElementById("waitlistForm");
   const note = document.getElementById("formNote");
-
-  if (!form || !note) {
-    console.error("❌ waitlistForm/formNote не найдены");
-    return;
-  }
+  if (!form || !note) return;
 
   let inflight = false;
 
-  // Реакция "при вводе" (то, что ты ожидаешь)
   const emailInput = form.querySelector("#email");
   if (emailInput) {
     emailInput.addEventListener("input", () => {
@@ -36,7 +29,6 @@ function initWaitlist() {
     });
   }
 
-  // Один обработчик submit. Важно: НЕ stopPropagation — иначе ломаем другие листенеры.
   document.addEventListener(
     "submit",
     async (e) => {
@@ -44,9 +36,7 @@ function initWaitlist() {
       if (!(target instanceof HTMLFormElement)) return;
       if (target.id !== "waitlistForm") return;
 
-      e.preventDefault(); // убираем перезагрузку
-      console.log("WAITLIST submit ✅");
-
+      e.preventDefault();
       if (inflight) return;
       inflight = true;
 
@@ -71,8 +61,6 @@ function initWaitlist() {
         });
 
         const json = await res.json().catch(() => null);
-        console.log("subscribe.php:", res.status, json);
-
         if (res.ok && json?.ok) {
           setNote(note, "✓ Спасибо! Вы в списке ожидания.", "#10b981");
           if (input) input.value = "";
@@ -92,6 +80,76 @@ function initWaitlist() {
   );
 }
 
+function initUploadForm() {
+  // Only on upload.html
+  if (!document.body.classList.contains("page-upload")) return;
+
+  const form = document.getElementById("uploadForm");
+  const email = document.getElementById("uploadEmail");
+  const faceInput = document.getElementById("faceInput");
+  const fullInput = document.getElementById("fullInput");
+  const faceChip = document.getElementById("faceChip");
+  const fullChip = document.getElementById("fullChip");
+  const sendBtn = document.getElementById("sendToAiBtn");
+  const note = document.getElementById("uploadNote");
+
+  if (!form || !email || !faceInput || !fullInput || !faceChip || !fullChip || !sendBtn || !note) return;
+
+  const setChip = (chipEl, file) => {
+    if (!file) {
+      chipEl.classList.remove("ok");
+      chipEl.textContent = "Не загружено";
+      return;
+    }
+    chipEl.classList.add("ok");
+    chipEl.textContent = "Загружено";
+  };
+
+  const canSubmit = () => {
+    const okEmail = email.checkValidity();
+    const okFiles = Boolean(faceInput.files?.[0] && fullInput.files?.[0]);
+    return okEmail && okFiles;
+  };
+
+  const updateUi = () => {
+    setChip(faceChip, faceInput.files?.[0] ?? null);
+    setChip(fullChip, fullInput.files?.[0] ?? null);
+    sendBtn.disabled = !canSubmit();
+  };
+
+  faceInput.addEventListener("change", updateUi);
+  fullInput.addEventListener("change", updateUi);
+  email.addEventListener("input", updateUi);
+
+  updateUi();
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!canSubmit()) return;
+
+    note.className = "note";
+    note.textContent = "Отправляем в AI…";
+    sendBtn.disabled = true;
+
+    try {
+      const fd = new FormData(form); // email + face + full
+      const res = await fetch("/api/submit.php", { method: "POST", body: fd });
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data?.ok) throw new Error(data?.error || "Ошибка сервера");
+
+      note.className = "note ok";
+      note.textContent = "Готово ✅ Ответ AI получен (смотри console).";
+      console.log("AI:", data.aiText);
+    } catch (err) {
+      note.className = "note err";
+      note.textContent = `Ошибка: ${err.message}`;
+    } finally {
+      sendBtn.disabled = false;
+    }
+  });
+}
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -99,119 +157,4 @@ function isValidEmail(email) {
 function setNote(noteEl, text, color) {
   noteEl.textContent = text;
   noteEl.style.color = color || "";
-}
-
-function initStatusbarTime() {
-  function setSBTime() {
-    const d = new Date();
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mm = String(d.getMinutes()).padStart(2, "0");
-    const el = document.getElementById("sbTime");
-    if (el) el.textContent = `${hh}:${mm}`;
-  }
-  setSBTime();
-  setInterval(setSBTime, 15000);
-}
-
-function initDemoNav() {
-  const screens = Array.from(document.querySelectorAll(".demo-screen"));
-  const titleEl = document.getElementById("demoTitle");
-  const chipEl = document.getElementById("demoChip");
-  const prevBtn = document.getElementById("prevDemo");
-  const nextBtn = document.getElementById("nextDemo");
-  const dotsWrap = document.getElementById("demoDots");
-
-  const overlay = document.getElementById("overlay");
-  const bar = document.getElementById("bar");
-  const overlayText = document.getElementById("overlayText");
-
-  if (!screens.length) return;
-
-  let current = 0;
-
-  const dots = screens.map(() => {
-    const d = document.createElement("span");
-    d.className = "dot2";
-    dotsWrap?.appendChild(d);
-    return d;
-  });
-
-  function retriggerReveal() {
-    document.querySelectorAll(".demo-screen.active .reveal").forEach((el) => {
-      el.classList.remove("reveal");
-      void el.offsetWidth;
-      el.classList.add("reveal");
-    });
-  }
-
-  function showScreen(i) {
-    current = Math.max(0, Math.min(i, screens.length - 1));
-    screens.forEach((s, idx) => s.classList.toggle("active", idx === current));
-    dots.forEach((d, idx) => d.classList.toggle("active", idx === current));
-
-    if (titleEl) titleEl.textContent = screens[current]?.dataset?.title || `Шаг ${current + 1}`;
-    if (chipEl) chipEl.textContent = screens[current]?.dataset?.chip || "demo";
-    if (prevBtn) prevBtn.disabled = current === 0;
-
-    retriggerReveal();
-  }
-
-  function fakeAnalyzeThenGoNext() {
-    if (!overlay || !bar || !overlayText) {
-      showScreen(current + 1);
-      return;
-    }
-
-    overlay.classList.add("active");
-    bar.style.width = "0%";
-
-    const steps = [
-      { p: 25, t: "Определяем подтон и контраст по фото лица…" },
-      { p: 55, t: "Считываем силуэт и пропорции по фото в полный рост…" },
-      { p: 80, t: "Подбираем палитру и базовые линии…" },
-      { p: 100, t: "Собираем офисный образ и ссылки на товары…" },
-    ];
-
-    let k = 0;
-    const timer = setInterval(() => {
-      overlayText.textContent = steps[k].t;
-      bar.style.width = steps[k].p + "%";
-      k++;
-      if (k >= steps.length) {
-        clearInterval(timer);
-        setTimeout(() => {
-          overlay.classList.remove("active");
-          showScreen(current + 1);
-        }, 400);
-      }
-    }, 420);
-  }
-
-  prevBtn?.addEventListener("click", () => showScreen(current - 1));
-  nextBtn?.addEventListener("click", () => {
-    if (current === 0) return fakeAnalyzeThenGoNext();
-    if (current === screens.length - 1) showScreen(0);
-    else showScreen(current + 1);
-  });
-
-  showScreen(0);
-}
-
-function initFixedDemoData() {
-  const setText = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  };
-
-  const content = document.querySelector(".appcontent");
-  if (content) content.scrollTop = 0;
-
-  setText("rUndertone", "холодный");
-  setText("rContrast", "средний–высокий");
-  setText("rBody", "баланс");
-  setText("rSilhouette", "прямой");
-  setText(
-    "rWhy",
-    "Холодная палитра и средне-высокий контраст усиливают черты лица, а прямые линии аккуратно 'собирают' силуэт."
-  );
 }

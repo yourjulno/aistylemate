@@ -1,0 +1,264 @@
+.page-upload{
+    background:
+      radial-gradient(1000px 600px at 20% 10%, rgba(59,130,246,.32), transparent 60%),
+      radial-gradient(900px 560px at 80% 30%, rgba(96,165,250,.22), transparent 60%),
+      radial-gradient(900px 600px at 40% 120%, rgba(29,78,216,.18), transparent 60%),
+      #050914;
+  }
+  
+  .upload-hero{
+    position: relative;
+    padding: 84px 0;
+    overflow: hidden;
+  }
+  
+  .upload-bg{
+    position:absolute;
+    inset:-40%;
+    pointer-events:none;
+    background:
+      radial-gradient(closest-side at 50% 25%, rgba(59,130,246,.18), rgba(0,0,0,0) 60%),
+      radial-gradient(closest-side at 20% 60%, rgba(96,165,250,.14), rgba(0,0,0,0) 55%),
+      radial-gradient(closest-side at 80% 65%, rgba(29,78,216,.12), rgba(0,0,0,0) 55%),
+      linear-gradient(180deg, rgba(7,18,38,.8), #050914);
+    filter: blur(10px);
+    transform: translateZ(0);
+  }
+  
+  .upload-wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .upload-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(2, 6, 23, .48);
+    border: 1px solid rgba(59,130,246,.22);
+    box-shadow: 0 0 0 1px rgba(59,130,246,.06), 0 20px 80px rgba(0,0,0,.35);
+  }
+  
+  .upload-badge .dot{
+    width:10px; height:10px; border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, #fff, #3b82f6);
+    box-shadow: 0 0 18px rgba(59,130,246,.35);
+  }
+  
+  .upload-title{
+    margin: 18px 0 10px;
+    font-size: clamp(34px, 4vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  
+  .upload-sub{
+    margin: 0 auto;
+    max-width: 760px;
+    color: rgba(226,232,240,.78);
+    font-size: 16px;
+    line-height: 1.55;
+    font-weight: 650;
+  }
+  
+  .upload-grid{
+    margin-top: 26px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 860px){
+    .upload-grid{ grid-template-columns: 1fr; }
+  }
+  
+  .upload-card{
+    text-align: left;
+    border-radius: 18px;
+    padding: 18px 18px 16px;
+    background: linear-gradient(180deg, rgba(8, 16, 33, .62), rgba(10, 20, 44, .55));
+    border: 1px solid rgba(148, 163, 184, .18);
+    box-shadow: 0 0 0 1px rgba(59,130,246,.06), 0 18px 90px rgba(0,0,0,.35);
+    backdrop-filter: blur(10px);
+  }
+  
+  .upload-card-head{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  
+  .upload-chip{
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,.18);
+    background: rgba(2, 6, 23, .35);
+    color: rgba(226,232,240,.72);
+    white-space: nowrap;
+  }
+  
+  .upload-chip.ok{
+    border-color: rgba(34,197,94,.32);
+    color: rgba(187,247,208,.95);
+    background: rgba(6, 95, 70, .18);
+  }
+  
+  .upload-list{
+    margin: 12px 0 14px;
+    padding-left: 18px;
+    color: rgba(226,232,240,.86);
+    font-weight: 650;
+  }
+  .upload-list li{ margin: 8px 0; }
+  
+  .file-input{
+    position:absolute;
+    width:1px;height:1px;
+    overflow:hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  
+  .upload-btn{
+    display:inline-flex;
+    width: 100%;
+    justify-content:center;
+    margin-top: 2px;
+  }
+  
+  .upload-hint{
+    margin-top: 10px;
+    font-size: 12px;
+    color: rgba(226,232,240,.62);
+  }
+  
+  .upload-submit{
+    margin-top: 16px;
+    padding: 14px 18px;
+    min-width: 320px;
+    border-radius: 999px;
+  }
+  
+  .upload-submit[disabled]{
+    opacity: .55;
+    cursor: not-allowed;
+    filter: saturate(.85);
+  }
+  
+  .upload-foot{
+    margin-top: 14px;
+    display:flex;
+    gap: 14px;
+    justify-content:center;
+    flex-wrap: wrap;
+    color: rgba(226,232,240,.72);
+    font-size: 13px;
+    font-weight: 650;
+  }
+  
+  .upload-legal{
+    margin-top: 10px;
+    font-size: 12px;
+    color: rgba(226,232,240,.55);
+  }
+  .preview-empty{
+    color: rgba(148,163,184,.95);
+    font-weight: 800;
+    font-size: 12px;
+  }
+  
+  .page-upload .preview-box{
+    min-height: 200px; /* можно 180-240 */
+  }
+
+  /* рамка под фото (показывается всегда) */
+.page-upload .preview-box{
+    min-height: 240px;              /* подгони под нужный размер */
+    background: rgba(2,6,23,.35);
+    border: 1px solid rgba(148,163,184,.16);
+    border-radius: 18px;
+    overflow: hidden;
+    padding: 0;                      /* чтобы фото влезало впритык */
+  }
+  
+  /* фото заполняет рамку */
+  .page-upload .preview-box img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;                   /* появится после выбора */
+  }
+  .upload-chip.ok{
+    border-color: rgba(34,197,94,.32);
+    color: rgba(187,247,208,.95);
+    background: rgba(6, 95, 70, .18);
+  }
+
+
+.page-upload .upload-actions .upload-submit{
+  flex: 0 0 auto;
+  min-width: 280px; /* можно 260/320 под вкус */
+}
+
+@media (max-width: 520px){
+  .page-upload .upload-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .page-upload .upload-actions input,
+  .page-upload .upload-actions .upload-submit{
+    width:100%;
+    max-width:none;
+    min-width:0;
+  }
+}
+
+/* === FIX: не даём глобальному form{display:flex} ломать upload === */
+.page-upload #uploadForm{
+  display: block;          /* ключевое */
+  max-width: 980px;        /* как upload-wrap, чтобы всё было ровно */
+  margin: 26px auto 0;
+}
+
+/* строка email + кнопка ровно под карточками */
+.page-upload .upload-actions{
+  display:flex;
+  gap: 12px;
+  align-items: stretch;
+  justify-content: space-between;
+
+  max-width: 980px;
+  margin: 16px auto 0;
+}
+
+/* email слева, нормальная ширина */
+.page-upload .upload-actions input{
+  flex: 1 1 auto;
+  max-width: none;         /* убираем твои 560px */
+}
+
+/* кнопка справа, без "прыжка" вниз */
+.page-upload .upload-actions .upload-submit{
+  margin-top: 0;           /* у тебя было 16px — из-за этого съезжает */
+  min-width: 280px;
+}
+
+/* мобилка: в колонку */
+@media (max-width: 520px){
+  .page-upload .upload-actions{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .page-upload .upload-actions .upload-submit{
+    min-width: 0;
+  }
+}
+
+
+  
