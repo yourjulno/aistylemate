@@ -1,90 +1,143 @@
 <?php
-// FILE: /www/api/submit.php
+/**
+ * FILE: /var/www/u3380884/data/www/aistylemate.ru/api/submit.php
+ *
+ * Expects multipart/form-data:
+ * - email (string)
+ * - face (file image)
+ * - full (file image)
+ *
+ * Returns JSON:
+ * { ok: true, result: { type: string, reason: string, bullets: string[] } }
+ */
+
+declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  http_response_code(405);
-  echo json_encode(['ok' => false, 'error' => 'Method Not Allowed']);
+error_reporting(E_ALL);
+ini_set('display_errors', '0');
+
+function out(int $code, array $payload): void {
+  http_response_code($code);
+  echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
   exit;
 }
 
-$root = dirname(__DIR__);
-$dbCfg = require $root . '/_private/db.php';
-$oaCfg = require $root . '/_private/openai.php';
-$apiKey = $oaCfg['OPENAI_API_KEY'] ?? '';
-
-if (!$apiKey || $apiKey === 'PASTE_YOUR_KEY_HERE') {
-  http_response_code(500);
-  echo json_encode(['ok' => false, 'error' => 'OPENAI_API_KEY не задан']);
-  exit;
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+  out(405, ['ok' => false, 'error' => 'Method Not Allowed']);
 }
 
-$email = trim($_POST['email'] ?? '');
+$dbConfigPath = '/var/www/u3380884/data/www/_private/db.php';
+$openaiConfigPath = '/var/www/u3380884/data/www/_private/openai.php';
+
+if (!is_file($dbConfigPath)) {
+  out(500, ['ok' => false, 'error' => 'Конфиг БД не найден', 'path' => $dbConfigPath]);
+}
+if (!is_file($openaiConfigPath)) {
+  out(500, ['ok' => false, 'error' => 'Конфиг OpenAI не найден', 'path' => $openaiConfigPath]);
+}
+
+$dbCfg = require $dbConfigPath;
+$openaiCfg = require $openaiConfigPath;
+
+$apiKey = trim((string)($openaiCfg['OPENAI_API_KEY'] ?? ''));
+if ($apiKey === '' || $apiKey === '...' || stripos($apiKey, 'PASTE') !== false) {
+  out(500, ['ok' => false, 'error' => 'OPENAI_API_KEY не задан']);
+}
+
+$proxyUrl = trim((string)($openaiCfg['OPENAI_PROXY_URL'] ?? ''));
+if ($proxyUrl === '') {
+  out(500, ['ok' => false, 'error' => 'OPENAI_PROXY_URL не задан в _private/openai.php']);
+}
+
+$email = trim((string)($_POST['email'] ?? ''));
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-  http_response_code(400);
-  echo json_encode(['ok' => false, 'error' => 'Некорректный email']);
-  exit;
+  out(400, ['ok' => false, 'error' => 'Некорректный email']);
 }
 
 function require_image(string $key): array {
   if (!isset($_FILES[$key]) || !is_array($_FILES[$key])) {
-    http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => "Файл '$key' не найден"]);
-    exit;
+    out(400, ['ok' => false, 'error' => "Файл '$key' не найден"]);
   }
   $f = $_FILES[$key];
 
   if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
-    http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => "Ошибка загрузки '$key'"]);
-    exit;
+    out(400, ['ok' => false, 'error' => "Ошибка загрузки '$key'"]);
   }
 
-  $max = 6 * 1024 * 1024; // 6MB
+  $max = 6 * 1024 * 1024;
   if (($f['size'] ?? 0) <= 0 || $f['size'] > $max) {
-    http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => "Файл '$key' слишком большой (max 6MB)"]);
-    exit;
+    out(400, ['ok' => false, 'error' => "Файл '$key' слишком большой (max 6MB)"]);
   }
 
-  $tmp = $f['tmp_name'] ?? '';
+  $tmp = (string)($f['tmp_name'] ?? '');
   $mime = mime_content_type($tmp) ?: '';
   $allowed = ['image/jpeg', 'image/png', 'image/webp'];
   if (!in_array($mime, $allowed, true)) {
-    http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => "Неподдерживаемый формат '$key' ($mime)"]);
-    exit;
+    out(400, ['ok' => false, 'error' => "Неподдерживаемый формат '$key' ($mime)"]);
   }
 
   $bin = file_get_contents($tmp);
   if ($bin === false) {
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'error' => "Не удалось прочитать '$key'"]);
-    exit;
+    out(500, ['ok' => false, 'error' => "Не удалось прочитать '$key'"]);
   }
 
-  $b64 = base64_encode($bin);
-  $dataUrl = "data:$mime;base64,$b64";
+  return [
+    'mime' => $mime,
+    'data_url' => 'data:' . $mime . ';base64,' . base64_encode($bin),
+  ];
+}
 
-  return ['mime' => $mime, 'data_url' => $dataUrl];
+function try_parse_json_from_text(string $text): ?array {
+  $text = trim($text);
+  if ($text === '') return null;
+
+  $direct = json_decode($text, true);
+  if (is_array($direct)) return $direct;
+
+  if (preg_match('/\{[\s\S]*\}/u', $text, $m) === 1) {
+    $ex = json_decode($m[0], true);
+    if (is_array($ex)) return $ex;
+  }
+
+  return null;
+}
+
+function normalize_result(array $j): ?array {
+  $type = isset($j['type']) ? trim((string)$j['type']) : '';
+  $reason = isset($j['reason']) ? trim((string)$j['reason']) : '';
+  $bullets = isset($j['bullets']) && is_array($j['bullets']) ? $j['bullets'] : [];
+
+  $bullets = array_values(array_filter(array_map(
+    fn($x) => trim((string)$x),
+    $bullets
+  ), fn($x) => $x !== ''));
+
+  $bullets = array_slice($bullets, 0, 4);
+  while (count($bullets) < 4) $bullets[] = '—';
+
+  if ($type === '' || $reason === '') return null;
+
+  return ['type' => $type, 'reason' => $reason, 'bullets' => $bullets];
 }
 
 $face = require_image('face');
 $full = require_image('full');
 
-/** 1) сохраняем email (можно в ту же таблицу) */
+/** 1) Сохраняем email */
 try {
   $dsn = sprintf(
     'mysql:host=%s;dbname=%s;charset=%s',
-    $dbCfg['host'],
-    $dbCfg['dbname'],
-    $dbCfg['charset'] ?? 'utf8mb4'
+    (string)$dbCfg['host'],
+    (string)$dbCfg['dbname'],
+    (string)($dbCfg['charset'] ?? 'utf8mb4')
   );
-  $pdo = new PDO($dsn, $dbCfg['user'], $dbCfg['pass'], [
+
+  $pdo = new PDO($dsn, (string)$dbCfg['user'], (string)$dbCfg['pass'], [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
   ]);
 
@@ -102,42 +155,46 @@ try {
     ':ua' => $ua,
   ]);
 } catch (Throwable $e) {
-  http_response_code(500);
-  echo json_encode(['ok' => false, 'error' => 'Ошибка БД', 'debug' => $e->getMessage()]);
-  exit;
+  // не валим весь запрос
 }
 
-/** 2) запрос в OpenAI (Responses API) */
+/** 2) Запрос в OpenAI через прокси (Worker) */
 $prompt = <<<TXT
-Ты — персональный AI-стилист. У пользователя 2 фото: (1) лицо, (2) полный рост.
-1) Определи примерный типаж/контраст/подтон и почему именно такой типаж кратко.
-2) Предложи офисный образ: верх/низ/обувь/аксессуары.
-3) Дай объяснение "почему подходит".
-Ответ дай структурировано и очень кратко: "Типаж", "Рекомендации", "Образ", "Почему подходит".
+Ты — эксперт по "типажам внешности из TikTok" (вайб-архетипы).
+На входе 2 фото: (1) лицо, (2) полный рост.
+
+Задача:
+- Выбери РОВНО ОДИН типаж (короткое название на русском, пример: "Луна", "Солнце", "Лёд", "Муза", "Нимфа", "Дива").
+- Объясни почему (1–2 предложения: черты, контраст, линии/силуэт).
+- Дай 4 коротких признака (2–5 слов каждый).
+
+Верни СТРОГО JSON. Без пояснений, без Markdown, без ```.
+Формат:
+{"type":"...","reason":"...","bullets":["...","...","...","..."]}
 TXT;
 
 $payload = [
-  'model' => 'gpt-4.1-mini', // поменяй при желании
+  'model' => $openaiCfg['DEFAULT_MODEL'] ?? 'gpt-4.1-mini',
   'input' => [[
     'role' => 'user',
     'content' => [
-      ['type' => 'input_text', 'text' => $prompt],
+      ['type' => 'input_text',  'text' => $prompt],
       ['type' => 'input_image', 'image_url' => $face['data_url']],
       ['type' => 'input_image', 'image_url' => $full['data_url']],
     ],
   ]],
 ];
 
-$ch = curl_init('https://api.openai.com/v1/responses');
+$ch = curl_init($proxyUrl);
 curl_setopt_array($ch, [
   CURLOPT_POST => true,
   CURLOPT_HTTPHEADER => [
     'Content-Type: application/json',
-    'Authorization: Bearer ' . $apiKey,
+    'Authorization: Bearer ' . $apiKey, // если Worker валидирует/проксирует
   ],
-  CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
+  CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
   CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_TIMEOUT => 60,
+  CURLOPT_TIMEOUT => 90,
 ]);
 
 $raw = curl_exec($ch);
@@ -146,37 +203,41 @@ $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if ($raw === false) {
-  http_response_code(500);
-  echo json_encode(['ok' => false, 'error' => 'OpenAI curl error', 'debug' => $err]);
-  exit;
+  out(500, ['ok' => false, 'error' => 'Proxy curl error', 'debug' => $err]);
 }
 
-$json = json_decode($raw, true);
+$worker = json_decode($raw, true);
 if ($code < 200 || $code >= 300) {
-  http_response_code(502);
-  echo json_encode(['ok' => false, 'error' => 'OpenAI error', 'debug' => $json ?: $raw]);
-  exit;
+  out(502, ['ok' => false, 'error' => 'Proxy/OpenAI error', 'debug' => $worker ?: mb_substr($raw, 0, 400)]);
+}
+
+if (!is_array($worker) || !($worker['ok'] ?? false)) {
+  out(502, ['ok' => false, 'error' => 'Worker вернул неожиданный формат', 'debug' => $worker ?: mb_substr($raw, 0, 400)]);
 }
 
 /**
- * В Responses API текст обычно лежит в output[*].content[*].text
- * (точная структура зависит от типа ответа).
- * Мы соберем весь output_text в одну строку.
+ * Worker может вернуть:
+ * 1) { ok:true, result:{type,reason,bullets} }
+ * 2) { ok:true, aiText:"{...json...}" }
  */
-$aiText = '';
-if (isset($json['output']) && is_array($json['output'])) {
-  foreach ($json['output'] as $out) {
-    if (!isset($out['content']) || !is_array($out['content'])) continue;
-    foreach ($out['content'] as $c) {
-      if (($c['type'] ?? '') === 'output_text' && isset($c['text'])) {
-        $aiText .= $c['text'] . "\n";
-      }
-    }
-  }
-}
-$aiText = trim($aiText);
+$result = null;
 
-echo json_encode([
-  'ok' => true,
-  'aiText' => $aiText ?: '(пустой ответ)',
-]);
+if (isset($worker['result']) && is_array($worker['result'])) {
+  $result = normalize_result($worker['result']);
+}
+
+if (!$result && isset($worker['aiText']) && is_string($worker['aiText'])) {
+  $parsed = try_parse_json_from_text($worker['aiText']);
+  if (is_array($parsed)) $result = normalize_result($parsed);
+}
+
+if (!$result) {
+  out(502, [
+    'ok' => false,
+    'error' => 'AI вернул невалидный JSON',
+    'aiTextPreview' => isset($worker['aiText']) ? mb_substr((string)$worker['aiText'], 0, 400) : null,
+    'debug' => $worker,
+  ]);
+}
+
+out(200, ['ok' => true, 'result' => $result]);

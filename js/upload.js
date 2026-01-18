@@ -1,119 +1,190 @@
 // FILE: /js/upload.js
-"use strict";
+// ВАЖНО: убираем scrollIntoView, и держим scrollY при переключениях.
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!document.body.classList.contains("page-upload")) return;
+  console.log("UPLOAD BUILD MARK:", "2026-01-18__v5");
 
-  const form = document.getElementById("uploadForm");
-  const email = document.getElementById("uploadEmail");
-  const faceInput = document.getElementById("faceInput");
-  const fullInput = document.getElementById("fullInput");
-  const faceChip = document.getElementById("faceChip");
-  const fullChip = document.getElementById("fullChip");
-  const facePreview = document.getElementById("facePreview");
-  const fullPreview = document.getElementById("fullPreview");
-  const sendBtn = document.getElementById("sendToAiBtn");
-  const note = document.getElementById("uploadNote");
+  const byId = (id) => document.getElementById(id);
 
-  if (!form || !email || !faceInput || !fullInput || !faceChip || !fullChip || !sendBtn) return;
+  const uploadStage = byId("uploadStage");
+  const loadingStage = byId("loadingStage");
+  const resultStage = byId("resultStage");
+  const uploadLegal = byId("uploadLegal");
 
-  let faceUrl = null;
-  let fullUrl = null;
+  const form = byId("uploadForm");
+  const email = byId("uploadEmail");
+  const faceInput = byId("faceInput");
+  const fullInput = byId("fullInput");
+  const faceChip = byId("faceChip");
+  const fullChip = byId("fullChip");
+  const sendBtn = byId("sendToAiBtn");
+  const note = byId("uploadNote");
 
-  const revoke = (url) => {
-    if (url) URL.revokeObjectURL(url);
-  };
+  const aiTitle = byId("aiTitle");
+  const aiReason = byId("aiReason");
+  const aiBullets = byId("aiBullets");
+  const aiReset = byId("aiReset");
 
-  const setChip = (chipEl, file) => {
-    if (!file) {
-      chipEl.classList.remove("ok");
-      chipEl.textContent = "Не загружено";
-      return;
-    }
-    chipEl.classList.add("ok");
-    chipEl.textContent = "Загружено";
-  };
+  const qs = new URLSearchParams(location.search);
+  const MOCK = qs.has("mock");          // /upload.html?mock
+  const FORCE_LOADING = qs.has("loading"); // /upload.html?loading
 
-  const setPreview = (imgEl, file, kind) => {
-    if (!imgEl) return;
 
-    if (!file) {
-      imgEl.removeAttribute("src");
-      imgEl.style.display = "none";
-      return;
-    }
+  const missing = [];
+  [
+    ["uploadStage", uploadStage],
+    ["loadingStage", loadingStage],
+    ["resultStage", resultStage],
+    ["uploadLegal", uploadLegal],
+    ["uploadForm", form],
+    ["uploadEmail", email],
+    ["faceInput", faceInput],
+    ["fullInput", fullInput],
+    ["faceChip", faceChip],
+    ["fullChip", fullChip],
+    ["sendToAiBtn", sendBtn],
+    ["uploadNote", note],
+    ["aiTitle", aiTitle],
+    ["aiReason", aiReason],
+    ["aiBullets", aiBullets],
+    ["aiReset", aiReset],
+  ].forEach(([name, el]) => {
+    if (!el) missing.push(name);
+  });
 
-    if (kind === "face") {
-      revoke(faceUrl);
-      faceUrl = URL.createObjectURL(file);
-      imgEl.src = faceUrl;
-    } else {
-      revoke(fullUrl);
-      fullUrl = URL.createObjectURL(file);
-      imgEl.src = fullUrl;
-    }
-
-    imgEl.style.display = "block";
-  };
-
-  const canSubmit = () => {
-    const okEmail = email.checkValidity();
-    const okFiles = Boolean(faceInput.files?.[0] && fullInput.files?.[0]);
-    return okEmail && okFiles;
-  };
+  if (missing.length) {
+    console.error("upload.js: missing DOM elements:", missing);
+    return;
+  }
 
   const setNote = (text, ok) => {
     note.textContent = text || "";
-    note.className = ok ? "note ok" : "note err";
+    note.className = ok === true ? "note ok" : ok === false ? "note err" : "note";
   };
 
-  const updateUi = () => {
-    const faceFile = faceInput.files?.[0] ?? null;
-    const fullFile = fullInput.files?.[0] ?? null;
+  const hasFile = (input) => Boolean(input?.files && input.files.length > 0);
 
-    setChip(faceChip, faceFile);
-    setChip(fullChip, fullFile);
+  const setChip = (chipEl, ok) => {
+    chipEl.classList.toggle("ok", ok);
+    chipEl.textContent = ok ? "Загружено" : "Не загружено";
+  };
 
-    setPreview(facePreview, faceFile, "face");
-    setPreview(fullPreview, fullFile, "full");
+  const canSubmit = () => email.checkValidity() && hasFile(faceInput) && hasFile(fullInput);
 
+  const update = () => {
+    setChip(faceChip, hasFile(faceInput));
+    setChip(fullChip, hasFile(fullInput));
     sendBtn.disabled = !canSubmit();
-    if (!canSubmit()) note.textContent = "";
   };
 
-  faceInput.addEventListener("change", updateUi);
-  fullInput.addEventListener("change", updateUi);
-  email.addEventListener("input", updateUi);
+  const escapeHtml = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    })[c]);
+
+  const showStage = (name) => {
+    uploadStage.style.display = name === "upload" ? "block" : "none";
+    loadingStage.style.display = name === "loading" ? "block" : "none";
+    resultStage.style.display = name === "result" ? "block" : "none";
+    uploadLegal.style.display = name === "upload" ? "" : "none";
+  };
+
+  const showStageKeepScroll = (name) => {
+    const y = window.scrollY;
+    showStage(name);
+    requestAnimationFrame(() => window.scrollTo({ top: y }));
+  };
+
+  const renderResult = ({ type, reason, bullets }) => {
+    aiTitle.textContent = `Твой типаж — ${type || "—"}`;
+    aiReason.textContent = reason || "";
+
+    aiBullets.innerHTML = "";
+    (Array.isArray(bullets) ? bullets : []).slice(0, 8).forEach((b) => {
+      const span = document.createElement("span");
+      span.className = "achip";
+      span.innerHTML = `<span>${escapeHtml(String(b))}</span>`;
+      aiBullets.appendChild(span);
+    });
+
+    // ❌ УБРАЛИ scrollIntoView (он и "съезжал" страницу)
+    showStageKeepScroll("result");
+  };
+
+  faceInput.addEventListener("change", update);
+  fullInput.addEventListener("change", update);
+  email.addEventListener("input", update);
+
+  aiReset.addEventListener("click", () => location.reload());
+
+  update();
+  showStage("upload");
+
+  if (FORCE_LOADING) {
+  showStage("loading");
+}
+
+  if (MOCK) {
+    // чтобы можно было нажать кнопку без файлов
+    sendBtn.disabled = false;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      showStage("loading");
+      setNote("", null);
+
+      await new Promise((r) => setTimeout(r, 1600)); // имитация ожидания
+
+      renderResult({
+        type: "Муза",
+        reason: "Мок-результат для локального теста интерфейса.",
+        bullets: ["Пункт 1", "Пункт 2", "Пункт 3"],
+      });
+    }, { once: true });
+  }
+
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!canSubmit()) return;
 
     sendBtn.disabled = true;
-    setNote("Отправляем в AI…", true);
+    setNote("", null);
+    showStageKeepScroll("loading");
 
     try {
-      const fd = new FormData(form); // email + face + full
-      const res = await fetch("api/submit.php", { method: "POST", body: fd });
-      const data = await res.json().catch(() => null);
+      const fd = new FormData(form);
+      const res = await fetch("/api/submit.php", { method: "POST", body: fd });
+      const rawText = await res.text();
 
-      if (!res.ok || !data?.ok) {
-        throw new Error(data?.error || "Ошибка сервера");
+      let data = null;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error("Сервер вернул не JSON: " + rawText.slice(0, 120));
       }
 
-      setNote("Готово ✅ Ответ AI получен. (см. консоль)", true);
-      console.log("AI:", data.aiText);
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${rawText.slice(0, 160)}`);
+      if (!data?.ok) throw new Error(data?.error || "Ошибка сервера");
+
+      const r = data.result;
+      if (!r || !r.type || !r.reason) throw new Error("AI вернул пустой результат");
+
+      renderResult({
+        type: String(r.type).trim(),
+        reason: String(r.reason).trim(),
+        bullets: Array.isArray(r.bullets) ? r.bullets : [],
+      });
     } catch (err) {
+      showStageKeepScroll("upload");
       setNote(`Ошибка: ${err.message}`, false);
-    } finally {
-      sendBtn.disabled = false;
+      sendBtn.disabled = !canSubmit();
     }
   });
-
-  window.addEventListener("beforeunload", () => {
-    revoke(faceUrl);
-    revoke(fullUrl);
-  });
-
-  updateUi();
 });
+

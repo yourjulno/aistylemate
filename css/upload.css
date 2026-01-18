@@ -260,5 +260,386 @@
   }
 }
 
+/* --- AI result block --- */
+.ai-result{
+  max-width: 860px;
+  margin: 22px auto 0;
+  text-align: left;
+}
+
+.ai-card{
+  border-radius: 18px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(8,16,33,.62), rgba(10,20,44,.55));
+  border: 1px solid rgba(148,163,184,.18);
+  box-shadow: 0 0 0 1px rgba(59,130,246,.06), 0 18px 90px rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+}
+
+.ai-headline{
+  margin: 0 0 10px;
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+}
+
+.ai-reason{
+  margin: 0 0 14px;
+  color: rgba(226,232,240,.78);
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+.ai-bullets{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ai-bullets li{
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.16);
+  background: rgba(148,163,184,.06);
+  font-weight: 900;
+  color: rgba(226,232,240,.92);
+}
+
+.ai-actions{
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 520px){
+  .ai-bullets{ grid-template-columns: 1fr; }
+}
+
+/* ===== AI RESULT ===== */
+.ai-result{
+  margin-top: 18px;           /* чтобы вставал ровно на месте формы */
+  text-align: left;
+}
+
+.ai-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap:12px;
+}
+
+.ai-title{
+  margin: 0;
+  font-size: clamp(22px, 2.3vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.ai-reason{
+  margin: 12px 0 0;
+  color: rgba(226,232,240,.86);
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.ai-chips{
+  margin-top: 14px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.ai-chips .achip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.18);
+  background: rgba(2, 6, 23, .35);
+  color: rgba(226,232,240,.9);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ai-chips .achip i{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #3b82f6);
+  box-shadow: 0 0 14px rgba(59,130,246,.35);
+  flex: 0 0 auto;
+}
+
+.ai-actions{
+  margin-top: 16px;
+}
+/* FILE: /css/upload.css */
+
+.loadingCard{
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(8,18,38,.55);
+  border-radius: 18px;
+  padding: 18px 18px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  min-height: 92px;
+}
+
+.spinner{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 3px solid rgba(255,255,255,.22);
+  border-top-color: rgba(255,255,255,.95);
+  animation: spin .9s linear infinite;
+}
+
+.loadingText{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.loadingSub{
+  opacity: .75;
+  font-size: 14px;
+}
+
+@keyframes spin{
+  to { transform: rotate(360deg); }
+}
+/* FILE: /css/upload.css */
+
+.loadingCard{
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(8,18,38,.55);
+  border-radius: 18px;
+  padding: 26px 18px;
+  min-height: 260px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+}
+
+.spinner{
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+
+  background: conic-gradient(
+    #7c3aed,
+    #06b6d4,
+    #22c55e,
+    #f59e0b,
+    #ef4444,
+    #7c3aed
+  );
+
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 0);
+
+  animation: spin .9s linear infinite;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
+}
+
+.loadingText{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.loadingSub{
+  opacity: .75;
+  font-size: 14px;
+}
+
+@keyframes spin{
+  to { transform: rotate(360deg); }
+}
+.loadingSteps{
+  margin-top: 10px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lstep{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  opacity: .75;
+  font-size: 13px;
+}
+
+.ldot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.25);
+}
+
+.lstep.active{
+  opacity: 1;
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.07);
+}
+
+.lstep.active .ldot{
+  background: rgba(255,255,255,.95);
+}
+
+.lstep.done{
+  opacity: .95;
+}
+
+.lstep.done .ldot{
+  background: rgba(34,197,94,.95);
+}
+
+/* FILE: /css/upload.css */
+
+.loadingCard{
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(8,18,38,.55);
+  border-radius: 18px;
+  padding: 26px 18px;
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+}
+
+.loadingText{
+  opacity: .95;
+}
+
+.progress{
+  position: relative;
+  width: min(420px, 100%);
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255,255,255,.12);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+.progress::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 38%;
+  border-radius: inherit;
+
+  background: linear-gradient(90deg, #7c3aed, #06b6d4, #22c55e, #f59e0b);
+  filter: saturate(1.15);
+
+  animation: indeterminate 1.2s ease-in-out infinite;
+}
+
+@keyframes indeterminate{
+  0%   { transform: translateX(-130%); }
+  50%  { transform: translateX(85%); }
+  100% { transform: translateX(230%); }
+}
+/* FILE: /css/upload.css */
+/* Слот фиксирует место, чтобы результат/лоадер появлялись "в тех же рамках". */
+.stage-slot{
+  margin-top: 22px;
+  min-height: 520px; /* подгони при необходимости (480-620) */
+}
+
+/* Если на мобиле нужно ниже/выше — можно так: */
+@media (max-width: 640px){
+  .stage-slot{ min-height: 600px; }
+}
+/* FILE: /css/upload.css */
+
+/* Результат = та же карточка, что и upload-card, но шириной на весь слот */
+.result-card{
+  width: 100%;
+  margin-top: 0;      /* убираем твоё старое margin-top из inline */
+  text-align: left;   /* как было */
+}
+
+/* Убираем специфичную обертку archetype (если она даёт свои отступы/фон) */
+#resultStage .archetype-top,
+#resultStage .archetype-why,
+#resultStage .archetype-chips{
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Если archetype сам добавляет фон/границы — выключаем, чтобы работал upload-card */
+#resultStage .archetype{
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Чипы аккуратно, как в карточках */
+#resultStage .archetype-chips{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* Верхняя строка (заголовок + AI бейдж) */
+#resultStage .archetype-top{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Заголовок внутри — без “скачков” */
+#resultStage h3{
+  margin: 0;
+}
+
+/* FILE: /css/upload.css */
+
+#resultStage .archetype-chips{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 16px; /* ключевой отступ, чтобы кнопка не наезжала */
+  align-items: center;
+}
+
+#resultStage .result-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 0;
+  position: static; /* на случай если где-то было absolute */
+  clear: both;      /* на случай странных float-стилей */
+}
+
+
+
 
   

@@ -59,64 +59,102 @@
           с вариантами по бюджету и ссылками на вещи
         </p>
 
-        <form id="uploadForm">
-          <div class="upload-grid">
-            <!-- FACE -->
-            <div class="upload-card">
-              <div class="upload-card-head">
-                <b>Фото лица</b>
-                <span class="upload-chip" id="faceChip">Не загружено</span>
+        <!-- STAGE: UPLOAD -->
+
+
+        <div class="stage-slot" id="stageSlot">
+          <!-- STAGE: UPLOAD -->
+          <div id="uploadStage">
+            <form id="uploadForm">
+              <div class="upload-grid">
+                <!-- FACE -->
+                <div class="upload-card">
+                  <div class="upload-card-head">
+                    <b>Фото лица</b>
+                    <span class="upload-chip" id="faceChip">Не загружено</span>
+                  </div>
+
+                  <ul class="upload-list">
+                    <li>Прямой взгляд в камеру</li>
+                    <li>Хороший свет (не слишком темно)</li>
+                    <li>Без фильтров и макияжа</li>
+                  </ul>
+
+                  <input id="faceInput" name="face" class="file-input" type="file" accept="image/*" />
+                  <label class="btn primary upload-btn" for="faceInput">Загрузить фото</label>
+
+                  <div class="upload-hint">Подсказка: селфи с хорошим светом</div>
+                </div>
+
+                <!-- FULL -->
+                <div class="upload-card">
+                  <div class="upload-card-head">
+                    <b>Фото в полный рост</b>
+                    <span class="upload-chip" id="fullChip">Не загружено</span>
+                  </div>
+
+                  <ul class="upload-list">
+                    <li>Рост в полный кадр</li>
+                    <li>Ровная поза, стоя лицом к камере</li>
+                    <li>В полный рост, без отдалений</li>
+                  </ul>
+
+                  <input id="fullInput" name="full" class="file-input" type="file" accept="image/*" />
+                  <label class="btn primary upload-btn" for="fullInput">Загрузить фото</label>
+
+                  <div class="upload-hint">Подсказка: кадр в полный рост без фильтров</div>
+                </div>
               </div>
 
-              <ul class="upload-list">
-                <li>Прямой взгляд в камеру</li>
-                <li>Хороший свет (не слишком темно)</li>
-                <li>Без фильтров и макияжа</li>
-              </ul>
-
-              <input id="faceInput" name="face" class="file-input" type="file" accept="image/*" />
-              <label class="btn primary upload-btn" for="faceInput">Загрузить фото</label>
-
-              <div class="upload-hint">Подсказка: селфи с хорошим светом</div>
-            </div>
-
-            <!-- FULL -->
-            <div class="upload-card">
-              <div class="upload-card-head">
-                <b>Фото в полный рост</b>
-                <span class="upload-chip" id="fullChip">Не загружено</span>
+              <div class="upload-actions">
+                <input id="uploadEmail" name="email" type="email" placeholder="Твой email" required>
+                <button class="btn primary upload-submit" id="sendToAiBtn" type="submit" disabled>
+                  Готово, отправить AI
+                </button>
               </div>
 
-              <ul class="upload-list">
-                <li>Рост в полный кадр</li>
-                <li>Ровная поза, стоя лицом к камере</li>
-                <li>В полный рост, без отдалений</li>
-              </ul>
+              <p class="note" id="uploadNote" aria-live="polite"></p>
+            </form>
+          </div>
 
-              <input id="fullInput" name="full" class="file-input" type="file" accept="image/*" />
-              <label class="btn primary upload-btn" for="fullInput">Загрузить фото</label>
-
-              <div class="upload-hint">Подсказка: кадр в полный рост без фильтров</div>
+          <!-- STAGE: LOADING -->
+          <div id="loadingStage" style="display:none;">
+            <div class="upload-card result-card loadingCard" role="status" aria-live="polite">
+              <div class="progress" role="progressbar" aria-label="Анализ фото" aria-valuetext="Анализируем фото"></div>
+              <div class="loadingText"><b>Анализируем фото…</b></div>
             </div>
           </div>
 
-          <div class="upload-actions">
-            <input id="uploadEmail" name="email" type="email" placeholder="Твой email" required>
-            <button class="btn primary upload-submit" id="sendToAiBtn" type="submit" disabled>
-              Готово, отправить AI
-            </button>
+          <!-- STAGE: RESULT -->
+          <!-- STAGE: RESULT (в том же месте) -->
+          <div id="resultStage" style="display:none;">
+            <div class="upload-card result-card">
+              <div class="archetype-top">
+                <div class="archetype-title">
+                  <div class="moonIcon"></div>
+                  <div style="min-width:0;">
+                    <h3 id="aiTitle">Твой типаж — —</h3>
+                    <div class="archetype-sub">по твоим фото</div>
+                  </div>
+                </div>
+                <div class="archetype-badge">AI</div>
+              </div>
+
+              <div class="archetype-why">
+                <p id="aiReason"></p>
+              </div>
+
+              <div class="archetype-chips" id="aiBullets"></div>
+
+              <div class="result-actions">
+                <button class="btn ghost" id="aiReset" type="button">Загрузить другие фото</button>
+              </div>
+            </div>
           </div>
-
-          <p class="note" id="uploadNote" aria-live="polite"></p>
-        </form>
-
-        <div class="upload-foot">
-          <span>⏱️ 2–3 минуты до результата</span>
-          <span>🖼️ 2 фото: лицо + полный рост</span>
-          <span>🧠 Объясняет: почему подходит</span>
         </div>
 
-        <p class="upload-legal">
+        <!-- 2) legal: убедись, что есть id (и он ниже stageSlot как раньше) -->
+        <p class="upload-legal" id="uploadLegal">
           Нажимая «Готово, отправить AI», ты соглашаешься с условиями использования
         </p>
 
@@ -145,11 +183,7 @@
     </div>
   </div>
 </footer>
-
-<!-- FILE: /upload.html  (замени только блок со скриптами внизу) -->
-<!-- ... -->
-<script src="js/app.js?v=20260115-6"></script>
-<script src="js/upload.js?v=20260115-1"></script>
+<script src="js/upload.js?v=20260118-3"></script>
 </body>
 </html>
 
