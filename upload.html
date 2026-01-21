@@ -10,6 +10,20 @@
   <link rel="icon" type="image/png" href="assets/favicon.png" sizes="192x192">
   <link rel="apple-touch-icon" href="assets/favicon.png">
 
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106352548', 'ym');
+
+      ym(106352548, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/106352548" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+
   <title>STYLEMATE AI — загрузка фото</title>
   <meta name="description" content="Загрузи 2 фото — получи персональную подборку образов" />
 
@@ -59,10 +73,9 @@
           с вариантами по бюджету и ссылками на вещи
         </p>
 
-        <!-- STAGE: UPLOAD -->
-
-
+        <!-- STAGES SLOT: всё внутри, чтобы ничего не "съезжало" -->
         <div class="stage-slot" id="stageSlot">
+
           <!-- STAGE: UPLOAD -->
           <div id="uploadStage">
             <form id="uploadForm">
@@ -76,12 +89,12 @@
 
                   <ul class="upload-list">
                     <li>Прямой взгляд в камеру</li>
-                    <li>Хороший свет (не слишком темно)</li>
+                    <li>Хороший свет</li>
                     <li>Без фильтров и макияжа</li>
                   </ul>
 
                   <input id="faceInput" name="face" class="file-input" type="file" accept="image/*" />
-                  <label class="btn primary upload-btn" for="faceInput">Загрузить фото</label>
+                  <label class="btn primary upload-btn" for="faceInput">Загрузить</label>
 
                   <div class="upload-hint">Подсказка: селфи с хорошим светом</div>
                 </div>
@@ -100,7 +113,7 @@
                   </ul>
 
                   <input id="fullInput" name="full" class="file-input" type="file" accept="image/*" />
-                  <label class="btn primary upload-btn" for="fullInput">Загрузить фото</label>
+                  <label class="btn primary upload-btn" for="fullInput">Загрузить</label>
 
                   <div class="upload-hint">Подсказка: кадр в полный рост без фильтров</div>
                 </div>
@@ -126,7 +139,6 @@
           </div>
 
           <!-- STAGE: RESULT -->
-          <!-- STAGE: RESULT (в том же месте) -->
           <div id="resultStage" style="display:none;">
             <div class="upload-card result-card">
               <div class="archetype-top">
@@ -137,11 +149,43 @@
                     <div class="archetype-sub">по твоим фото</div>
                   </div>
                 </div>
-                <div class="archetype-badge">AI</div>
+
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div class="archetype-badge">AI</div>
+
+                  <span class="nav-arrow-text" id="toEventLabel">К выбору образа</span>
+
+                  <button class="nav-arrow" id="toEventBtn" type="button" aria-label="Выбор мероприятия">→</button>
+
+                  <button class="btn ghost btn-sm" id="backFromEventBtn" type="button" style="display:none;">
+                    ← Назад
+                  </button>
+                </div>
               </div>
 
               <div class="archetype-why">
                 <p id="aiReason"></p>
+              </div>
+
+              <!-- EVENT: внутри result-card, чтобы не "жило" отдельно -->
+              <div class="eventSection" id="eventSection" style="display:none;">
+                <div class="eventTitle">Выбор мероприятия</div>
+
+                <div class="eventGrid" role="group" aria-label="Мероприятие">
+                  <button class="eventBtn" type="button" data-event="офис">Офис</button>
+                  <button class="eventBtn" type="button" data-event="театр">Театр</button>
+                  <button class="eventBtn" type="button" data-event="повседневный">Повседневный</button>
+                  <button class="eventBtn" type="button" data-event="свидание">Свидание</button>
+                  <button class="eventBtn" type="button" data-event="другое">Другое</button>
+                </div>
+
+                <div id="otherWrap" style="display:none; margin-top:10px;">
+                  <input id="otherEventInput" class="eventInput" type="text" maxlength="60" placeholder="Напиши своё мероприятие" />
+                </div>
+
+                <div class="eventActions">
+                  <button class="btn primary" id="genLooksBtn" type="button" disabled>Сгенерировать образы</button>
+                </div>
               </div>
 
               <div class="archetype-chips" id="aiBullets"></div>
@@ -151,9 +195,24 @@
               </div>
             </div>
           </div>
+
+          <!-- STAGE: OUTFITS -->
+          <div id="outfitsStage" style="display:none;">
+            <div class="upload-card result-card">
+              <div class="outfitsTop">
+                <div>
+                  <h3 class="outfitsTitle">Твои образы</h3>
+                  <div class="outfitsSub" id="outfitsSub"></div>
+                </div>
+                <button class="btn ghost" id="backToEventBtn" type="button">← Назад</button>
+              </div>
+
+              <div class="outfitsGrid" id="outfitsGrid"></div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- 2) legal: убедись, что есть id (и он ниже stageSlot как раньше) -->
         <p class="upload-legal" id="uploadLegal">
           Нажимая «Готово, отправить AI», ты соглашаешься с условиями использования
         </p>
@@ -183,7 +242,8 @@
     </div>
   </div>
 </footer>
-<script src="js/upload.js?v=20260118-3"></script>
+
+<script src="js/upload.js?v=20260118-18"></script>
 </body>
 </html>
 
