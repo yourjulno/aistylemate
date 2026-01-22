@@ -638,6 +638,250 @@
   position: static; /* на случай если где-то было absolute */
   clear: both;      /* на случай странных float-стилей */
 }
+.nav-arrow{
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.95);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.eventSection{
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.eventTitle{
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.eventGrid{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.eventBtn{
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.92);
+  border-radius: 999px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.eventBtn.active{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.22);
+}
+
+.eventInput{
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.95);
+  padding: 12px 12px;
+  outline: none;
+}
+
+.eventActions{
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.outfitsTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.outfitsTitle{
+  margin: 0;
+}
+
+.outfitsSub{
+  opacity: .75;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* FILE: /css/upload.css */
+/* 2 образы = 2 колонки на десктопе */
+.outfitsGrid{
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.outfitsGrid img{
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+}
+
+/* мобилка: 1 колонка */
+@media (max-width: 900px){
+  .outfitsGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* FILE: /css/upload.css */
+
+#outfitsStage .upload-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* важно: не центр и не space-between */
+  align-items: stretch;
+}
+
+#outfitsStage .outfitsTop{
+  margin-bottom: 12px;
+}
+
+#outfitsStage .outfitsGrid{
+  margin-top: 0; /* если вдруг было большое значение где-то */
+  align-items: start;
+}
+#outfitsStage .upload-card{
+  min-height: 0;
+  height: auto;
+}
+
+/* FILE: /css/upload.css */
+
+/* убираем лишние вертикальные отступы в карточке с образами */
+#outfitsStage .upload-card{
+  padding-top: 16px;     /* было 18 — чуть компактнее */
+  padding-bottom: 16px;
+}
+
+/* подзаголовок без лишних отступов */
+#outfitsStage .outfitsSub{
+  margin-top: 2px;
+  margin-bottom: 8px;    /* отделяем от картинок */
+}
+
+/* сетка ближе к тексту */
+#outfitsStage .outfitsGrid{
+  margin-top: 0;         /* убираем 14px */
+}
+/* FILE: /css/upload.css */
+
+.outfitsGrid{
+  margin-top: 12px;                 /* ближе к заголовку */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.outfitCard{
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, .18);
+  background: rgba(2, 6, 23, .35);
+  overflow: hidden;
+
+  aspect-ratio: 2 / 3;              /* полный рост */
+}
+
+.outfitCard img{
+  width: 100%;
+  height: 100%;                     /* КЛЮЧЕВО */
+  object-fit: cover;                /* КЛЮЧЕВО */
+  display: block;                   /* убирает baseline-gap */
+}
+
+@media (max-width: 900px){
+  .outfitsGrid{ grid-template-columns: 1fr; }
+}
+/* FILE: /css/upload.css */
+.nav-arrow-text{
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(226,232,240,.82);
+  white-space: nowrap;
+}
+
+/* FILE: /css/upload.css */
+
+/* чтобы после блока выбора мероприятия всегда было место */
+#resultStage .eventSection{
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 16px;          /* ✅ ключевое */
+  padding-bottom: 6px;          /* ✅ можно 0-12 */
+}
+
+/* кнопка "Сгенерировать..." и нижний отступ */
+#resultStage .eventActions{
+  margin-top: 12px;
+  margin-bottom: 16px;          /* ✅ ключевое */
+}
+
+/* блок с "Загрузить другие фото" ниже и без налезаний */
+#resultStage .result-actions{
+  margin-top: 0;
+  padding-top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  position: relative;           /* на всякий */
+  z-index: 1;
+}
+/* FILE: /css/upload.css */
+/* ✅ Center 2-card grid and stretch cards */
+#outfitsStage .outfitsGrid{
+  width: 100%;
+  max-width: 980px;          /* как upload-wrap, можешь 900/860 */
+  margin: 14px auto 0;       /* центрируем блок сетки */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  justify-content: center;   /* на случай фикс. ширин у детей */
+  justify-items: stretch;    /* дети растягиваются по колонке */
+}
+
+#outfitsStage .outfitCard{
+  width: 100%;
+  max-width: none;           /* убираем любые ограничения */
+}
+
+#outfitsStage .outfitCard img{
+  width: 100%;
+  display: block;
+}
+
+/* мобилка */
+@media (max-width: 900px){
+  #outfitsStage .outfitsGrid{ grid-template-columns: 1fr; }
+}
+/* FILE: /css/upload.css */
+#outfitsStage .outfitsGrid{
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 520px;      /* по вкусу */
+  margin: 14px auto 0;
+}
+
 
 
 
